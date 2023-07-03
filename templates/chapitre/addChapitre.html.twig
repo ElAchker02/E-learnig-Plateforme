@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+
+
+{% block body %}
+
+
+<div class="example-wrapper">
+
+    <div class="pagetitle">
+        <h1>Ajouter un chapitre</h1>
+    </div>
+         {{ form_start(ChapitreForm) }}
+                        {{ form_row(ChapitreForm.nomChap , {label : "Nom du chapitre "}) }}
+                        {{ form_row(ChapitreForm.description , {label : "Description "}) }}
+                        {{ form_row(ChapitreForm.video , {label : "Video "}) }}
+                        {{ form_row(ChapitreForm.documents , {label : "Document "}) }}
+                        {{ form_row(ChapitreForm.id_Cours , {label : "Cours "}) }}
+
+        {{ form_end(ChapitreForm) }}
+</div>
+
+{% endblock %}

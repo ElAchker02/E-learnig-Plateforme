@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+
+<h2 class="" style='font-family: "Poppins", sans-serif;font-weight: 500;'>Donneés personnelles</h2>
+                    {{ form_start(PersonneForm) }}
+                        {{ form_row(PersonneForm.nom , {label : "Nom  "}) }}
+                        {{ form_row(PersonneForm.prenom , {label : 'Prenom '}) }}
+                        {{ form_row(PersonneForm.dateNaiss, {label : 'Date de naissance '}) }}
+                        {{ form_row(PersonneForm.email, {label : 'Email '}) }}
+                        {{ form_row(PersonneForm.telephone, {label : 'Telephone '}) }}
+                    {{ form_end(PersonneForm) }}
+
+{% endblock %}
+
+

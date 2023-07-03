@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+
+
+{% block body %}
+
+
+<div class="example-wrapper">
+
+    <div class="pagetitle">
+        <h1>Ajouter un cours</h1>
+    </div>
+         {{ form_start(CoursForm) }}
+                        {{ form_row(CoursForm.nomCours , {label : "Nom du cours "}) }}
+                        {{ form_row(CoursForm.introduction , {label : "Description "}) }}
+                        {{ form_row(CoursForm.id_categorie_id , {label : "Categorie "}) }}
+                        {{ form_row(CoursForm.estPayant , {label : "Payant ou gratuit "}) }}
+                        {{ form_row(CoursForm.prix , {label : "Prix "}) }}
+
+        {{ form_end(CoursForm) }}
+</div>
+
+<script>
+    var radioEstPayant = document.getElementById('cours_form_estPayant_0');
+    var radioNestPasPayant = document.getElementById('cours_form_estPayant_1');
+    var champTexte = document.getElementById('cours_form_prix');
+
+    radioEstPayant.addEventListener('change', function() {
+    if (radioEstPayant.checked) {
+        champTexte.disabled = false;
+    }
+    });
+    radioNestPasPayant.addEventListener('change', function() {
+    if (radioNestPasPayant.checked) {
+        champTexte.disabled = true;
+    }
+    });
+
+</script>
+{% endblock %}
