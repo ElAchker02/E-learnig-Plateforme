@@ -32,7 +32,7 @@ class RegistrationController extends AbstractController
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
-
+        $idE = $request->query->get('idE');
         if ($form->isSubmitted() && $form->isValid()) {
             $user->setPassword(
                 $userPasswordHasher->hashPassword(
@@ -64,7 +64,8 @@ class RegistrationController extends AbstractController
                         $user->setRoles(array("ETUDIANT"));    
                     }
                     elseif($utilisateur == "enseignant"){
-                        $user->setRoles(array("ENSEIGNANT"));
+                        
+                        $user->setRoles(array($idE,"ENSEIGNANT"));
                      
                     }
                     $personne = $entityManager->getRepository(Personne::class)->find($id);

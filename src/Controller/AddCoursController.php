@@ -45,9 +45,9 @@ class AddCoursController extends AbstractController
                 $idCat = $form->get('id_categorie_id')->getData();
                 $categorie = $entityManager->getRepository(Categorie::class)->find($idCat);
                 $cours->setIdCategorie($categorie);
-                $user = $token->getUser();
+                $user = $this->getUser();
                 // $idPersonne = $user->getIdPersonne();
-                $enseignant = $entityManager->getRepository(Enseignant::class)->find(1);
+                $enseignant = $entityManager->getRepository(Enseignant::class)->find(reset($roles));
                 $cours->setIdEnseignant($enseignant);
                 $entityManager->persist($cours);
                 $entityManager->flush();

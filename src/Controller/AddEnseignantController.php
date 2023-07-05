@@ -35,7 +35,7 @@ class AddEnseignantController extends AbstractController
             $entityManager->flush();
             return $this->redirectToRoute('app_register', ['id' => $id,
             "specialite"=>$specialite,
-            "Utilisateur"=>"enseignant"]);
+            "idE"=> $enseignant->getId()]);
             
         }
 

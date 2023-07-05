@@ -40,6 +40,7 @@ class ChapitreFormType extends AbstractType
                 'mapped' => false,
                 'constraints' => [
                     new File([
+                        'maxSize' => '50M',
                         'mimeTypes' => [
                             'application/pdf',
                         ],

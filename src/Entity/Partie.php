@@ -19,8 +19,8 @@ class Partie
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(nullable: true)]
-    private array $images = [];
+    #[ORM\Column(length: 255,nullable: true)]
+    private ?string $images = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $info = null;
@@ -52,12 +52,12 @@ class Partie
         return $this;
     }
 
-    public function getImages(): array
+    public function getImages(): ?string
     {
         return $this->images;
     }
 
-    public function setImages(?array $images): self
+    public function setImages(?string $images): self
     {
         $this->images = $images;
 
