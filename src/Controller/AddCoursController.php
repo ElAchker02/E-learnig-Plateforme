@@ -30,9 +30,7 @@ class AddCoursController extends AbstractController
     public function index(SessionInterface $session,Request $request,EntityManagerInterface $entityManager): Response
     {
         $roles = $session->get('roles');
-        $token = $this->security->getToken();
-        // $enseignant_id = $session->get('idEnseignant');
-        if(in_array('ENSEIGNANT',$roles) ){
+        if(in_array('ENSEIGNANT',$roles)  ){
             $cours = new Cours();
             $form = $this->createForm(CoursFormType::class, $cours);
             $form->handleRequest($request);
@@ -46,7 +44,6 @@ class AddCoursController extends AbstractController
                 $categorie = $entityManager->getRepository(Categorie::class)->find($idCat);
                 $cours->setIdCategorie($categorie);
                 $user = $this->getUser();
-                // $idPersonne = $user->getIdPersonne();
                 $enseignant = $entityManager->getRepository(Enseignant::class)->find(reset($roles));
                 $cours->setIdEnseignant($enseignant);
                 $entityManager->persist($cours);
@@ -66,7 +63,7 @@ class AddCoursController extends AbstractController
     public function AfficherCours(CoursRepository $coursRepository,SessionInterface $session,Request $request): Response
     {
         $roles = $session->get('roles');
-        if(in_array('ENSEIGNANT',$roles) ){
+        if(in_array('ENSEIGNANT',$roles) || in_array('SUPER-ADMIN',$roles )){
 
             $data = $coursRepository->findAll(); 
 

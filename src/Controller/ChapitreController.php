@@ -21,7 +21,7 @@ class ChapitreController extends AbstractController
     public function AfficherChapitres(ChapitreRepository $chapitreRepository,SessionInterface $session): Response
     {
         $roles = $session->get('roles');
-        if(in_array('ENSEIGNANT',$roles) ){
+        if(in_array('ENSEIGNANT',$roles) || in_array('SUPER-ADMIN',$roles )){
 
             $data = $chapitreRepository->findAll(); 
 

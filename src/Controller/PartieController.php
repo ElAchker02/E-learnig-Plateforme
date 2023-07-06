@@ -23,7 +23,7 @@ class PartieController extends AbstractController
     public function afficherPartie(SessionInterface $session,PartieRepository $partieRepository): Response
     {
         $roles = $session->get('roles');
-        if(in_array('ENSEIGNANT',$roles) ){
+        if(in_array('ENSEIGNANT',$roles) || in_array('SUPER-ADMIN',$roles)){
 
 
             $data = $partieRepository->findAll(); 
