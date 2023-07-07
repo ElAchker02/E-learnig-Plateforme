@@ -68,6 +68,11 @@ class RegistrationController extends AbstractController
                         $user->setRoles(array($idE,"ENSEIGNANT"));
                      
                     }
+                    elseif($utilisateur == "admin"){
+                        
+                        $user->setRoles(array("ADMIN"));
+                     
+                    }
                     $personne = $entityManager->getRepository(Personne::class)->find($id);
                     $user->setIdPersonne($personne);
                    

@@ -328,13 +328,12 @@
               </a>
           </li>
           <li class="nav-item">
-              <a class="nav-link collapsed" href="">
+              <a class="nav-link collapsed" href="{{ path('show_admins') }}">
               <i class="ri-user-add-fill"></i>
-              <span>Ajouter un admin</span>
+              <span>Administrateurs</span>
               </a>
           </li>
     {% elseif 'ENSEIGNANT' in app.session.get('roles') %}
-
         <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
           <i class="fa-solid fa-book"></i><span>Gestions des cours</span><i class="bi bi-chevron-down ms-auto"></i>

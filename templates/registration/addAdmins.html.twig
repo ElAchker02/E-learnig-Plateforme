@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Administarteurs{% endblock %}
+
+{% block body %}
+                    {{ form_start(PersonneForm) }}
+                        {{ form_row(PersonneForm.nom , {label : "Nom  "}) }}
+                        {{ form_row(PersonneForm.prenom , {label : 'Prenom '}) }}
+                        {{ form_row(PersonneForm.dateNaiss, {label : 'Date de naissance '}) }}
+                        {{ form_row(PersonneForm.email, {label : 'Email '}) }}
+                        {{ form_row(PersonneForm.telephone, {label : 'Telephone '}) }}
+                    {{ form_end(PersonneForm) }}
+{% endblock %}
