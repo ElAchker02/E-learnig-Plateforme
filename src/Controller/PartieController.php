@@ -20,16 +20,22 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 class PartieController extends AbstractController
 {
     #[Route('/parties', name: 'app_partie')]
-    public function afficherPartie(SessionInterface $session,PartieRepository $partieRepository): Response
+    public function afficherPartie(SessionInterface $session,PartieRepository $partieRepository,EntityManagerInterface $entityManager): Response
     {
         $roles = $session->get('roles');
         if(in_array('ENSEIGNANT',$roles) || in_array('SUPER-ADMIN',$roles)){
 
-
-            $data = $partieRepository->findAll(); 
+            $query = $entityManager->createQueryBuilder()
+            ->select('p.description', 'p.images','p.info','p.avertissement','co.nomCours','ch.nomChap','co.nomCours')
+            ->from(Partie::class, 'p')
+            ->join(Chapitre::class, 'ch', 'WITH', 'ch.id = p.id_Chapitre')
+            ->join(Cours::class, 'co', 'WITH', 'co.id = p.id_cours')
+            ->getQuery();
+            $results = $query->getResult(); 
+            // $data = $partieRepository->findAll(); 
 
             return $this->render('partie/afficherPartie.html.twig', [
-                'parties' => $data,
+                'parties' => $results,
             ]);
         }
         return $this->render('home/index.html.twig', [

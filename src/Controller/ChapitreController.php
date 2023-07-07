@@ -18,15 +18,20 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 class ChapitreController extends AbstractController
 {
     #[Route('/chapitres', name: 'app_chapitre')]
-    public function AfficherChapitres(ChapitreRepository $chapitreRepository,SessionInterface $session): Response
+    public function AfficherChapitres(ChapitreRepository $chapitreRepository,SessionInterface $session,EntityManagerInterface $entityManager): Response
     {
         $roles = $session->get('roles');
         if(in_array('ENSEIGNANT',$roles) || in_array('SUPER-ADMIN',$roles )){
 
-            $data = $chapitreRepository->findAll(); 
-
+            $query = $entityManager->createQueryBuilder()
+            ->select('ch.nomChap', 'ch.description','ch.video','ch.documents','co.nomCours')
+            ->from(Chapitre::class, 'ch')
+            ->join(Cours::class, 'co', 'WITH', 'ch.id_Cours = co.id')
+            ->getQuery();
+    
+            $results = $query->getResult(); 
             return $this->render('chapitre/afficherChapitre.html.twig', [
-                'chapitres' => $data,
+                'chapitres' => $results,
             ]);
         }
         return $this->render('home/index.html.twig', [
