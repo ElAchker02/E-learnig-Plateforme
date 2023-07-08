@@ -26,7 +26,7 @@ class PartieController extends AbstractController
         if(in_array('ENSEIGNANT',$roles) || in_array('SUPER-ADMIN',$roles)){
 
             $query = $entityManager->createQueryBuilder()
-            ->select('p.description', 'p.images','p.info','p.avertissement','co.nomCours','ch.nomChap','co.nomCours')
+            ->select('p.id','p.description', 'p.images','p.info','p.avertissement','co.nomCours','ch.nomChap','co.nomCours')
             ->from(Partie::class, 'p')
             ->join(Chapitre::class, 'ch', 'WITH', 'ch.id = p.id_Chapitre')
             ->join(Cours::class, 'co', 'WITH', 'co.id = p.id_cours')
@@ -89,5 +89,33 @@ class PartieController extends AbstractController
         return $this->render('home/index.html.twig', [
             'controller_name' => 'AddCoursController',
         ]);
+    }
+
+    #[Route('/modifier/partie/{id}', name: 'edit_partie')]
+    public function ModifierCours(EntityManagerInterface $entityManager,Partie $partie,Request $request,$id){
+
+            $entity = $entityManager->getRepository(Partie::class)->find($id);
+            $form = $this->createForm(PartieFormType::class, $partie);
+            $form->handleRequest($request);
+            if($form->isSubmitted() && $form->isValid()){
+                
+                $partie = $form->getData();
+                $entity->setDescription($form->get('description')->getData());
+                // $entity->setImages($form->get('images')->getData());
+                $entity->setInfo($form->get('info')->getData());
+                $entity->getAvertissement($form->get('avertissement')->getData());
+                $chapitre = $entityManager->getRepository(Chapitre::class)->find($form->get('id_Chapitre')->getData());
+                $entity->setIdChapitre($chapitre);
+                $cours = $entityManager->getRepository(Cours::class)->find($form->get('id_cours')->getData());
+                $entity->setIdCours($cours);
+                $entityManager->flush();
+
+                // $this->FlashMessage->add("success","Cours Modifié");
+                return $this->redirectToRoute('app_partie');
+                // dd($etudiant);
+            }
+            return $this->render('partie/addPartie.html.twig', [
+                'PartieForm' => $form->createView(),
+            ]);
     }
 }

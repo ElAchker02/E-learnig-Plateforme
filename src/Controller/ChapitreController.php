@@ -24,7 +24,7 @@ class ChapitreController extends AbstractController
         if(in_array('ENSEIGNANT',$roles) || in_array('SUPER-ADMIN',$roles )){
 
             $query = $entityManager->createQueryBuilder()
-            ->select('ch.nomChap', 'ch.description','ch.video','ch.documents','co.nomCours')
+            ->select('ch.id','ch.nomChap', 'ch.description','ch.video','ch.documents','co.nomCours')
             ->from(Chapitre::class, 'ch')
             ->join(Cours::class, 'co', 'WITH', 'ch.id_Cours = co.id')
             ->getQuery();
@@ -84,5 +84,31 @@ class ChapitreController extends AbstractController
         return $this->render('home/index.html.twig', [
             'controller_name' => 'AddCoursController',
         ]);
+    }
+    #[Route('/modifier/chapitre/{id}', name: 'edit_chapitre')]
+    public function ModifierCours(EntityManagerInterface $entityManager,Chapitre $chapitre,Request $request,$id){
+
+            $entity = $entityManager->getRepository(Chapitre::class)->find($id);
+            $form = $this->createForm(ChapitreFormType::class, $chapitre);
+            
+            $form->handleRequest($request);
+            if($form->isSubmitted() && $form->isValid()){
+                
+                $chapitre = $form->getData();
+                $entity->setNomChap($form->get('nomChap')->getData());
+                $entity->setDescription($form->get('description')->getData());
+                $entity->setVideo($form->get('video')->getData());
+                $entity->setDocuments($form->get('documents')->getData());
+                $cours = $entityManager->getRepository(Cours::class)->find($form->get('id_Cours')->getData());
+                $entity->setIdCours($cours);
+                $entityManager->flush();
+
+                // $this->FlashMessage->add("success","Cours Modifié");
+                return $this->redirectToRoute('app_chapitre');
+                // dd($etudiant);
+            }
+            return $this->render('chapitre/addChapitre.html.twig', [
+                'ChapitreForm' => $form->createView(),
+            ]);
     }
 }

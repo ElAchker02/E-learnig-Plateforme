@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 
 class AddCoursController extends AbstractController
 {
@@ -74,5 +75,32 @@ class AddCoursController extends AbstractController
         return $this->render('home/index.html.twig', [
             'controller_name' => 'AddCoursController',
         ]);
+    }
+
+    #[Route('/modifier/cours/{id}', name: 'edit_cours')]
+    public function ModifierCours(EntityManagerInterface $entityManager,Cours $cours,Request $request,$id){
+            $entity = $entityManager->getRepository(Cours::class)->find($id);
+            $form = $this->createForm(CoursFormType::class, $cours);
+            
+            $form->handleRequest($request);
+            if($form->isSubmitted() && $form->isValid()){
+                
+                $cours = $form->getData();
+                
+                $entity->setNomCours($form->get('nomCours')->getData());
+                $entity->setIntroduction($form->get('introduction')->getData());
+                $entity->setEstPayant($form->get('estPayant')->getData());
+                $entity->setPrix($form->get('prix')->getData());
+                $categorie = $entityManager->getRepository(Categorie::class)->find($form->get('id_categorie_id')->getData());
+                $entity->setIdCategorie($categorie);
+                 
+                $entityManager->flush();
+                // $this->FlashMessage->add("success","Cours Modifié");
+                return $this->redirectToRoute('show_cours');
+                // dd($etudiant);
+            }
+            return $this->render('cours/addCours.html.twig', [
+                'CoursForm' => $form->createView(),
+            ]);
     }
 }
