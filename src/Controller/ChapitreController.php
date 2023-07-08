@@ -111,4 +111,14 @@ class ChapitreController extends AbstractController
                 'ChapitreForm' => $form->createView(),
             ]);
     }
+
+    #[Route('/delete/{id}', name: 'delete_chapitre')]
+    public function delete(EntityManagerInterface $entityManager, $id): Response
+    {
+        $entity = $entityManager->getRepository(Chapitre::class)->find($id);
+
+        $entityManager->remove($entity);
+        $entityManager->flush();
+        return $this->redirectToRoute('app_chapitre');
+    }
 }

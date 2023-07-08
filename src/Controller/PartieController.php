@@ -118,4 +118,13 @@ class PartieController extends AbstractController
                 'PartieForm' => $form->createView(),
             ]);
     }
+    #[Route('/delete/{id}', name: 'delete_partie')]
+    public function delete(EntityManagerInterface $entityManager, $id): Response
+    {
+        $entity = $entityManager->getRepository(Partie::class)->find($id);
+
+        $entityManager->remove($entity);
+        $entityManager->flush();
+        return $this->redirectToRoute('app_partie');
+    }
 }

@@ -103,4 +103,16 @@ class AddCoursController extends AbstractController
                 'CoursForm' => $form->createView(),
             ]);
     }
+
+    #[Route('/delete/{id}', name: 'delete_cours')]
+    public function delete(EntityManagerInterface $entityManager, $id): Response
+    {
+        $entity = $entityManager->getRepository(Cours::class)->find($id);
+
+        $entityManager->remove($entity);
+        $entityManager->flush();
+
+        // Redirect or display a success message
+        return $this->redirectToRoute('show_cours');
+    }
 }
