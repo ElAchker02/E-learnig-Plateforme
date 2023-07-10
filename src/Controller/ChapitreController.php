@@ -55,6 +55,22 @@ class ChapitreController extends AbstractController
                 $cours = $entityManager->getRepository(Cours::class)->find($idCours);
                 $chapitre->setIdCours($cours);
 
+                $video = $form->get('video')->getData();
+                if ($video) {
+                    $originalFilename = pathinfo($video->getClientOriginalName(), PATHINFO_FILENAME);
+                    $safeFilename = $slugger->slug($originalFilename);
+                    $newFilename = $safeFilename.'-'.uniqid().'.'.$video->guessExtension();
+                    try {
+                        $video->move(
+                            $this->getParameter('video_directory'),
+                            $newFilename
+                        );
+                    } catch (FileException $e) {
+
+                    }
+                    $chapitre->setVideo($newFilename);
+                }
+
                 $pdf = $form->get('documents')->getData();
                 if ($pdf) {
                     $originalFilename = pathinfo($pdf->getClientOriginalName(), PATHINFO_FILENAME);

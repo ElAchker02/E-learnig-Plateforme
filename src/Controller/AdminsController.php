@@ -6,12 +6,16 @@ use App\Entity\Enseignant;
 use App\Entity\Personne;
 use App\Entity\User;
 use App\Form\PersonneFormType;
+use App\Form\RegistrationFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class AdminsController extends AbstractController
 {
@@ -58,7 +62,7 @@ class AdminsController extends AbstractController
         $roles = $session->get('roles');
         if(in_array('SUPER-ADMIN',$roles)  ){
             $query = $entityManager->createQueryBuilder()
-            ->select('u.roles', 'u.nomUtilisateur','p.nom','p.prenom','p.dateNaiss','p.email','p.telephone', 'e.specialite')
+            ->select('u.id','p.id as idPersonne','u.roles', 'u.nomUtilisateur','p.nom','p.prenom','u.email' ,'e.specialite')
             ->from(User::class, 'u')
             ->join(Personne::class, 'p', 'WITH', 'u.id_Personne = p.id')
             ->join(Enseignant::class, 'e', 'WITH', 'e.id_personne = p.id')
@@ -74,5 +78,65 @@ class AdminsController extends AbstractController
         return $this->render('home/index.html.twig', [
             'controller_name' => 'AddCoursController',
         ]);
+    }
+
+    
+    #[Route('/modifier/admin/{id}}', name: 'edit_admin')]
+    public function ModifierCours(EntityManagerInterface $entityManager,SluggerInterface $slugger,User $user,Request $request,$id,UserPasswordHasherInterface $userPasswordHasher){
+
+            $entity = $entityManager->getRepository(User::class)->find($id);
+            $form = $this->createForm(RegistrationFormType::class, $user);
+            $session = $request->getSession();
+            $session->set('TypeUtilisateur', "enseignant");
+            $form->get('NomUtilisateur')->setData($entity->getNomUtilisateur());
+            $form->get('email')->setData($entity->getEmail());
+            $form->handleRequest($request);
+            if($form->isSubmitted() && $form->isValid()){
+                
+                $user = $form->getData(); 
+                $entity->setEmail($form->get('email')->getData());
+                if($form->get('plainPassword')->getData() != null){
+                    $entity->setPassword(
+                        $userPasswordHasher->hashPassword(
+                            $user,
+                            $form->get('plainPassword')->getData()
+                        )
+                    );
+                }   
+                if($form->get('image')->getData() != null){
+                    $image = $form->get('image')->getData();
+                    if ($image) {
+                        $originalFilename = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+                        $safeFilename = $slugger->slug($originalFilename);
+                        $newFilename = $safeFilename.'-'.uniqid().'.'.$image->guessExtension();
+                        try {
+                            $image->move(
+                                $this->getParameter('image_directory'),
+                                $newFilename);
+                        } catch (FileException $e) {
+
+                        }
+                        $entity->setImage($newFilename);
+                    }
+                }  
+                $entity->setNomUtilisateur($form->get('NomUtilisateur')->getData());
+
+                $entityManager->flush();
+
+                // $this->FlashMessage->add("success","Cours Modifié");
+                return $this->redirectToRoute('show_admins');
+                // dd($etudiant);
+            }
+            return $this->render('registration/register.html.twig', [
+                'registrationForm' => $form->createView(),
+            ]);
+    }
+    #[Route('/delete/admin/{id}', name: 'delete_admin')]
+    public function delete(EntityManagerInterface $entityManager, $id): Response
+    {
+        $entity2 = $entityManager->getRepository(Personne::class)->find($id);
+        $entityManager->remove($entity2);
+        $entityManager->flush();
+        return $this->redirectToRoute('show_admins');
     }
 }

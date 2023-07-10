@@ -26,6 +26,7 @@ class ChapitreFormType extends AbstractType
                 'mapped' => false,
                 'constraints' => [
                     new File([
+                        // 'maxSize' => '500M',
                         'mimeTypes' => [
                             'video/mp4',
                             'video/mpeg',
@@ -40,7 +41,7 @@ class ChapitreFormType extends AbstractType
                 'mapped' => false,
                 'constraints' => [
                     new File([
-                        'maxSize' => '50M',
+                        // 'maxSize' => '500M',
                         'mimeTypes' => [
                             'application/pdf',
                         ],
@@ -62,7 +63,6 @@ class ChapitreFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            // 'data_class' => Chapitre::class,
             'data_class' => Chapitre::class,
         ]);
     }
