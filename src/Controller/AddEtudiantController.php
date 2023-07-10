@@ -60,7 +60,7 @@ class AddEtudiantController extends AbstractController
         $roles = $session->get('roles');
         if(in_array('SUPER-ADMIN',$roles) || in_array('ADMIN',$roles) ){
             $query = $entityManager->createQueryBuilder()
-            ->select('p.nom', 'p.prenom','p.dateNaiss','p.email','p.telephone', 'e.filiere')
+            ->select(' p.id','e.id as id_etudiant ','p.nom', 'p.prenom','p.dateNaiss','p.email','p.telephone', 'e.filiere')
             ->from(Personne::class, 'p')
             ->join(Etudiant::class, 'e', 'WITH', 'e.id_personne = p.id')
             ->getQuery();
@@ -76,5 +76,45 @@ class AddEtudiantController extends AbstractController
             'controller_name' => 'AddCoursController',
         ]);
 
+    }
+
+    #[Route('/modifier/etudiant/{id}/{id2}', name: 'edit_etudiant')]
+    public function ModifierCours(EntityManagerInterface $entityManager,Personne $personne,Request $request,$id,$id2){
+
+            $entity = $entityManager->getRepository(Etudiant::class)->find($id2);
+            $form = $this->createForm(PersonneFormType::class, $personne);
+            $session = $request->getSession();
+            $session->set('TypeUtilisateur', "etudiant");
+            $form->get('filiere')->setData($entity->getFiliere());
+            
+            $form->handleRequest($request);
+            if($form->isSubmitted() && $form->isValid()){
+                
+                $personne = $form->getData(); 
+                $entity2 = $entityManager->getRepository(Personne::class)->find($id);
+                $entity2->setNom($form->get('nom')->getData());
+                $entity2->setPrenom($form->get('prenom')->getData());
+                $entity2->setDateNaiss($form->get('dateNaiss')->getData());
+                $entity2->setEmail($form->get('email')->getData());
+                $entity2->setTelephone($form->get('telephone')->getData());
+                $entity->setFiliere($form->get('filiere')->getData());
+                $entityManager->flush();
+
+                // $this->FlashMessage->add("success","Cours Modifié");
+                return $this->redirectToRoute('show_etudiants');
+                // dd($etudiant);
+            }
+            return $this->render('registration/addEnseignant.html.twig', [
+                'PersonneForm' => $form->createView(),
+            ]);
+    }
+
+    #[Route('/delete/etudiant/{id}', name: 'delete_etudiant')]
+    public function delete(EntityManagerInterface $entityManager, $id): Response
+    {
+        $entity2 = $entityManager->getRepository(Personne::class)->find($id);
+        $entityManager->remove($entity2);
+        $entityManager->flush();
+        return $this->redirectToRoute('show_etudiants');
     }
 }

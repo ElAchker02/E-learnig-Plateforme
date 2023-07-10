@@ -48,7 +48,7 @@ class AddCoursController extends AbstractController
                 $enseignant = $entityManager->getRepository(Enseignant::class)->find(reset($roles));
                 $cours->setIdEnseignant($enseignant);
                 $entityManager->persist($cours);
-                $entityManager->flush();
+                $entityManager->flush();    
             }
             
             return $this->render('cours/addCours.html.twig', [
