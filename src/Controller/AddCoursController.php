@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Categorie;
 use App\Entity\Cours;
 use App\Entity\Enseignant;
+use App\Entity\Personne;
 use App\Entity\User;
 use App\Form\CoursFormType;
 use App\Repository\CoursRepository;
@@ -61,15 +62,23 @@ class AddCoursController extends AbstractController
     }
 
     #[Route('/Cours', name: 'show_cours')]
-    public function AfficherCours(CoursRepository $coursRepository,SessionInterface $session,Request $request): Response
+    public function AfficherCours(EntityManagerInterface $entityManager ,SessionInterface $session,Request $request): Response
     {
         $roles = $session->get('roles');
         if(in_array('ENSEIGNANT',$roles) || in_array('SUPER-ADMIN',$roles )){
 
-            $data = $coursRepository->findAll(); 
+            // $data = $coursRepository->findAll(); 
+            $query = $entityManager->createQueryBuilder()
+            ->select('c.id','c.nomCours', 'c.introduction','c.datePublication','c.nbChapitres','c.estPayant','c.prix', "CONCAT(p.nom, ' ', p.prenom) AS fullName","ca.nomCat")
+            ->from(Cours::class, 'c')
+            ->join(Enseignant::class, 'e', 'WITH', 'c.id_Enseignant = e.id')
+            ->join(Personne::class, 'p', 'WITH', 'e.id_personne = p.id')
+            ->join(Categorie::class, 'ca', 'WITH', 'c.id_Categorie = ca.id')
+            ->getQuery();
+            $results = $query->getResult();
 
             return $this->render('cours/afficherCours.html.twig', [
-                'cours' => $data,
+                'cours' => $results,
             ]);
         }
         return $this->render('home/index.html.twig', [

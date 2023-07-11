@@ -333,8 +333,14 @@
               <span>Administrateurs</span>
               </a>
           </li>
+          <li class="nav-item">
+              <a class="nav-link collapsed" href="{{ path('show_devoires') }}">
+              <i class="ri-user-add-fill"></i>
+              <span>Devoires</span>
+              </a>
+          </li>
     {% elseif 'ENSEIGNANT' in app.session.get('roles') %}
-        <li class="nav-item">
+      <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
           <i class="fa-solid fa-book"></i><span>Gestions des cours</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
@@ -353,6 +359,12 @@
             <a href="{{ path('app_partie') }}">
               <i class="bi bi-circle"></i><span>Parties des chapitres</span>
             </a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link collapsed" href="{{ path('show_devoires') }}">
+              <i class="ri-user-add-fill"></i>
+              <span>Devoires</span>
+              </a>
           </li>
         </ul>
       </li>

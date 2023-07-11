@@ -28,8 +28,8 @@ class Devoir
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $dateSoumission = null;
 
-    #[ORM\Column(nullable: true)]
-    private array $images = [];
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $images = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $fichier = null;
@@ -105,12 +105,12 @@ class Devoir
         return $this;
     }
 
-    public function getImages(): array
+    public function getImages(): ?string
     {
         return $this->images;
     }
 
-    public function setImages(?array $images): self
+    public function setImages(?string $images): self
     {
         $this->images = $images;
 

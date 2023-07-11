@@ -17,16 +17,19 @@
               <div class="card">
                 <div class="card-body">
                 <div class="d-flex justify-content-end mt-2">
-
-                                    <div class="actions d-flex justify-content-between align-items-center gap-2">
-                      <a href="{{ path('edit_partie',{id : part.id}) }}" class="btn btn-primary "><i class="fa fa-file-edit"></i></a>
-                      <a href="{{ path('delete_partie',{id : part.id}) }}" class="btn btn-danger"><i class="fa fa-trash"></i></a>
-                    </div>
+                  {% if 'ENSEIGNANT' in app.session.get('roles') %}
+                        <div class="actions d-flex justify-content-between align-items-center gap-2">
+                              <a href="{{ path('edit_partie',{id : part.id}) }}" class="btn btn-primary "><i class="fa fa-file-edit"></i></a>
+                              <a href="{{ path('delete_partie',{id : part.id}) }}" class="btn btn-danger"><i class="fa fa-trash"></i></a>
+                              </div>
+                        
+                {% endif %}
                 </div>
                   <p>{{ part.description}}</p>
                   <hr>
                   <p>{% if part.images != null %}
-                            {{part.images}}
+                              <img src="{{ asset('imagePartie/' ~ part.images) }}" alt="{{part.images}}" width="77"
+                                    height="50" class="fluid my-2 rounded">
                       {% else %}
                              Cette partie n'a pas de photo
                       {% endif %}
