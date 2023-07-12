@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+
+
+{% block body %}
+
+
+<div class="example-wrapper">
+
+    <div class="pagetitle">
+        <h1>Ajouter un test</h1>
+    </div>
+    {{ form_start(testForm) }}
+                        {{ form_row(testForm.nomTest , {label : "Nom du test "}) }}
+                        {{ form_row(testForm.duree , {label : "duree "}) }}
+                        {{ form_row(testForm.id_Cours , {label : "Cours "}) }}
+
+        {{ form_end(testForm) }}
+</div>
+
+{% endblock %}

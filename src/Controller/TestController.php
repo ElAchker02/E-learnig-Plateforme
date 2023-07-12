@@ -1,0 +1,75 @@
+<?php
+
+namespace App\Controller;
+
+use App\Entity\Cours;
+use App\Entity\Test;
+use App\Form\TestFormType;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Routing\Annotation\Route;
+
+class TestController extends AbstractController
+{
+    #[Route('/tests', name: 'show_test')]
+    public function afficherTests(SessionInterface $session,EntityManagerInterface $entityManager): Response
+    {
+        $roles = $session->get('roles');
+        if(in_array('ENSEIGNANT',$roles) || in_array('SUPER-ADMIN',$roles )){
+
+            $query = $entityManager->createQueryBuilder()
+            ->select('t.id','t.nomTest','t.duree')
+            ->from(Test::class, 't')
+            ->getQuery();
+    
+            $results = $query->getResult(); 
+            return $this->render('test/afficherTest.html.twig', [
+                'tests' => $results,
+            ]);
+        }
+        return $this->render('home/index.html.twig', [
+            'controller_name' => 'AddCoursController',
+        ]);;
+    }
+
+    #[Route('/ajouter/test', name: 'add_test')]
+    public function ajouterTests(SessionInterface $session,Request $request,EntityManagerInterface $entityManager): Response
+    {
+        $roles = $session->get('roles');
+        if(in_array('ENSEIGNANT',$roles) ){
+            $test = new Test();
+            $form = $this->createForm(TestFormType::class, $test);
+            $form->handleRequest($request);
+
+            
+            if ($form->isSubmitted() && $form->isValid()){
+
+                $idCours = $form->get('id_Cours')->getData();
+                $cours = $entityManager->getRepository(Cours::class)->find($idCours);
+                $test->setIdCours($cours);
+
+                $entityManager->persist($test);
+                $entityManager->flush();
+            }
+            
+            return $this->render('test/addTest.html.twig', [
+                'testForm' => $form->createView(),
+            ]);
+        }
+        return $this->render('home/index.html.twig', [
+            'controller_name' => 'AddCoursController',
+        ]);
+    }
+    #[Route('/delete/test/{id}', name: 'delete_Test')]
+    public function delete(EntityManagerInterface $entityManager, $id): Response
+    {
+        $entity = $entityManager->getRepository(Test::class)->find($id);
+
+        $entityManager->remove($entity);
+        $entityManager->flush();
+        return $this->redirectToRoute('show_test');
+    }
+}
