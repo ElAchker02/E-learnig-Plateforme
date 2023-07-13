@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+
+
+{% block body %}
+
+
+<div class="example-wrapper">
+
+    <div class="pagetitle">
+        <h1>Ajouter une question</h1>
+    </div>
+    {{ form_start(questionForm) }}
+                        {{ form_row(questionForm.description , {label : "Description "}) }}
+                        {{ form_row(questionForm.id_Test , {label : "duree "}) }}
+
+        {{ form_end(questionForm) }}
+</div>
+
+{% endblock %}
