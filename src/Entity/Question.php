@@ -9,12 +9,39 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: QuestionRepository::class)]
+// #[ORM\HasLifecycleCallbacks()]
 class Question
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+
+    //  /**
+    //  * @ORM\Column(type="datetime")
+    //  */
+    // private $created_at;
+
+    // /**
+    //  * @ORM\Column(type="datetime")
+    //  */
+    // private $updated_at;
+
+    // /**
+    //  * @ORM\PrePersist
+    //  */
+    // public function setCreatedAtValue(): void
+    // {
+    //     $this->created_at = new \DateTime();
+    // }
+
+    // /**
+    //  * @ORM\PreUpdate
+    //  */
+    // public function setUpdatedAtValue(): void
+    // {
+    //     $this->updated_at = new \DateTime();
+    // }
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
