@@ -32,7 +32,7 @@ class TestController extends AbstractController
         }
         return $this->render('home/index.html.twig', [
             'controller_name' => 'AddCoursController',
-        ]);;
+        ]);
     }
 
     #[Route('/ajouter/test', name: 'add_test')]
@@ -71,5 +71,27 @@ class TestController extends AbstractController
         $entityManager->remove($entity);
         $entityManager->flush();
         return $this->redirectToRoute('show_test');
+    }
+
+    #[Route('/modifier/test/{id}', name: 'edit_test')]
+    public function ModifierTest(EntityManagerInterface $entityManager,Test $test,Request $request,$id){
+
+            $entity = $entityManager->getRepository(Test::class)->find($id);
+            $form = $this->createForm(TestFormType::class, $test);
+            
+            $form->handleRequest($request);
+            if($form->isSubmitted() && $form->isValid()){
+                
+                $test = $form->getData();
+                $entity->setNomTest($form->get('nomTest')->getData());
+                $entity->setDuree($form->get('duree')->getData());
+                $cours = $entityManager->getRepository(Cours::class)->find($form->get('id_Cours')->getData());
+                $entity->setIdCours($cours);
+                $entityManager->flush();
+                return $this->redirectToRoute('show_test');
+            }
+            return $this->render('test/addTest.html.twig', [
+                'testForm' => $form->createView(),
+            ]);
     }
 }
