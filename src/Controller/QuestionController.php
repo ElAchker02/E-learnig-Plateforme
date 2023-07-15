@@ -95,4 +95,34 @@ class QuestionController extends AbstractController
                 'questionForm' => $form->createView(),
             ]);
     }
+
+    #[Route('/ajouter/question/{id}', name: 'add_qst2')]
+    public function ajouterTests2(SessionInterface $session,Request $request,EntityManagerInterface $entityManager,$id): Response
+    {
+        
+        $roles = $session->get('roles');
+        if(in_array('ENSEIGNANT',$roles) ){
+            $question = new Question();
+            $form = $this->createForm(QuestionFormType::class, $question);
+            $form->remove('id_Test');
+            $form->handleRequest($request);
+
+            $entity = $entityManager->getRepository(Test::class)->find($id);
+            
+            
+            if ($form->isSubmitted() && $form->isValid())
+            {
+                $question->setIdTest($entity);
+                $entityManager->persist($question);
+                $entityManager->flush();
+            }
+            
+            return $this->render('question/addQuestion.html.twig', [
+                'questionForm' => $form->createView(),
+            ]);
+        }
+        return $this->render('home/index.html.twig', [
+            'controller_name' => 'AddCoursController',
+        ]);
+    }
 }
