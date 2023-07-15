@@ -28,9 +28,6 @@ class Chapitre
     #[ORM\Column(length: 255,nullable: true)]
     private ?string $documents = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $ord = null;
-
     #[ORM\ManyToOne(inversedBy: 'chapitres')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Cours $id_Cours = null;
@@ -97,17 +94,7 @@ class Chapitre
         return $this;
     }
 
-    public function getOrd(): ?int
-    {
-        return $this->ord;
-    }
 
-    public function setOrd(int $ord): self
-    {
-        $this->ord = $ord;
-
-        return $this;
-    }
 
     public function getIdCours(): ?Cours
     {

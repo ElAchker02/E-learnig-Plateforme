@@ -124,4 +124,6 @@ class AddCoursController extends AbstractController
         // Redirect or display a success message
         return $this->redirectToRoute('show_cours');
     }
+
+    
 }

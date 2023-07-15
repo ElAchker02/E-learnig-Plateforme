@@ -137,4 +137,66 @@ class ChapitreController extends AbstractController
         $entityManager->flush();
         return $this->redirectToRoute('app_chapitre');
     }
+
+    #[Route('/ajouter/chapitre/{id}', name: 'add_chapitre2')]
+    public function AddChapitre2($id,SessionInterface $session,Request $request,EntityManagerInterface $entityManager,SluggerInterface $slugger): Response
+    {
+        $roles = $session->get('roles');
+        if(in_array('ENSEIGNANT',$roles) ){
+            $entity = $entityManager->getRepository(Chapitre::class)->find($id);
+            $chapitre = new Chapitre();
+            $form = $this->createForm(ChapitreFormType::class, $chapitre);
+            $form->remove('id_Cours');
+            $form->handleRequest($request);
+
+            
+            if ($form->isSubmitted() && $form->isValid()){
+                $chapitre->setIdCours($entity);
+
+                $video = $form->get('video')->getData();
+                if ($video) {
+                    $originalFilename = pathinfo($video->getClientOriginalName(), PATHINFO_FILENAME);
+                    $safeFilename = $slugger->slug($originalFilename);
+                    $newFilename = $safeFilename.'-'.uniqid().'.'.$video->guessExtension();
+                    try {
+                        $video->move(
+                            $this->getParameter('video_directory'),
+                            $newFilename
+                        );
+                    } catch (FileException $e) {
+
+                    }
+                    $chapitre->setVideo($newFilename);
+                }
+
+                $pdf = $form->get('documents')->getData();
+                if ($pdf) {
+                    $originalFilename = pathinfo($pdf->getClientOriginalName(), PATHINFO_FILENAME);
+                    $safeFilename = $slugger->slug($originalFilename);
+                    $newFilename = $safeFilename.'-'.uniqid().'.'.$pdf->guessExtension();
+                    try {
+                        $pdf->move(
+                            $this->getParameter('documents_directory'),
+                            $newFilename
+                        );
+                    } catch (FileException $e) {
+
+                    }
+                    $chapitre->setDocuments($newFilename);
+                }
+
+
+
+                $entityManager->persist($chapitre);
+                $entityManager->flush();
+            }
+            
+            return $this->render('chapitre/addChapitre.html.twig', [
+                'ChapitreForm' => $form->createView(),
+            ]);
+        }
+        return $this->render('home/index.html.twig', [
+            'controller_name' => 'AddCoursController',
+        ]);
+    }
 }

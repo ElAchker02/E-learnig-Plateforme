@@ -19,8 +19,8 @@ class ChapitreFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nomChap',TextType::class,)
-            ->add('description',TextareaType::class)
+            ->add('nomChap',TextType::class,['label' => 'Nom du chapitre',])
+            ->add('description',TextareaType::class,['label' => 'Description',])
             ->add('video',FileType::class,[
                 'required' => false,
                 'mapped' => false,
@@ -35,6 +35,7 @@ class ChapitreFormType extends AbstractType
                         'mimeTypesMessage' => 'Veuillez sélectionner un fichier vidéo valide.',
                     ]),
                 ],
+                'label' => 'Video',
             ])
             ->add('documents',FileType::class,[
                 'required' => false,
@@ -48,6 +49,7 @@ class ChapitreFormType extends AbstractType
                         'mimeTypesMessage' => 'Veuillez sélectionner un fichier PDF valide.',
                     ]),
                 ],
+                'label' => 'Document',
             ])
             // ->add('ord')
             ->add('id_Cours', EntityType::class, [
@@ -55,6 +57,7 @@ class ChapitreFormType extends AbstractType
                 'class'=> Cours::class,
                 'choice_value' => 'id',
                 'choice_label' => 'nom_cours',
+                'label' => 'Cours ',
             ])
             ->add('Valider',SubmitType::class)
         ;
