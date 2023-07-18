@@ -7,10 +7,16 @@
             <div class="card-body">
             <div class="pagetitle d-flex justify-content-between align-items-center">
                     <h5 class="card-title">Liste des etudiants</h5>
+                     <div class="search-bar">
+                      <form class="search-form d-flex align-items-center justify-content-between gap-2" method="POST" action="#">
+                        <label for="searchInput">Nom d'etudiant:</label>
+                        <input type="text"  id="searchInput" placeholder="Etudiant" class="form-control" title="Enter le nom d'etudiant">
+                      </form>
+                    </div>
             </div>
 
               <!-- Table with hoverable rows -->
-              <table class="table table-hover">
+              <table class="table table-hover" id="etudiantTable">
                 <thead>
                   <tr>
                         <th scope="col">Nom</th>
@@ -44,5 +50,28 @@
             </div>
           </div>
 
+                <script>        
+        function filterTable() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("searchInput");
+            filter = input.value.toLowerCase();
+            table = document.getElementById("etudiantTable");
+            tr = table.getElementsByTagName("tr");
 
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[0]; 
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+
+        
+        document.getElementById("searchInput").addEventListener("input", filterTable);
+    </script>
 {% endblock %}

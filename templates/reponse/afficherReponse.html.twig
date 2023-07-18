@@ -7,17 +7,28 @@
             <div class="card-body">
             <div class="pagetitle d-flex justify-content-between align-items-center">
                     <h5 class="card-title">Liste des Reponses</h5>
-                    <a href="{{ path('add_reponse') }}" class="btn btn-primary"><i class="fa-solid fa-plus"></i></a>
+                    
+                    <div class="search-bar">
+                      <form class="search-form d-flex align-items-center justify-content-between gap-2" method="POST" action="#">
+                        <label for="searchInput">Nom du question:</label>
+                        <input type="text"  id="searchInput" placeholder="Question" class="form-control" title="Enter la question">
+                        {% if 'ENSEIGNANT' in app.session.get('roles') %}
+                        <a href="{{ path('add_reponse') }}" class="btn btn-primary"><i class="fa-solid fa-plus"></i></a>
+                         {% endif %}
+                      </form>
+                    </div>
             </div>
 
-            <table class="table table-hover">
+            <table class="table table-hover" id ="reponseTable">
                 <thead>
                 <tr>
                         <th scope="col">Description</th>
                         <th scope="col">Vrai/Faux</th>
                         <th scope="col">Test</th>
                         <th scope="col">Question</th>
+                        {% if 'ENSEIGNANT' in app.session.get('roles') %}
                         <th scope="col">Actions</th>
+                        {% endif %}
                 </tr>
                 </thead>
                 <tbody>
@@ -27,10 +38,12 @@
                                 <td>{{ reponse.valide }}</td>
                                 <td>{{ reponse.nomTest }}</td>
                                 <td>{{ reponse.description }}</td>
+                                {% if 'ENSEIGNANT' in app.session.get('roles') %}
                                 <td><div class="actions d-flex justify-content-between align-items-center gap-2">
                     <a href="{{ path('edit_rep',{id :reponse.id}) }}" class="btn btn-primary "><i class="fa fa-file-edit"></i></a>
                     <a href="{{ path('delete_rep',{id :reponse.id}) }}" class="btn btn-danger"><i class="fa fa-trash"></i></a>
                     </div></td>
+                    {% endif %}
                             </tr>   
                         {%  endfor  %}
 
@@ -41,5 +54,28 @@
             </div>
         </div>
 
+                    <script>        
+        function filterTable() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("searchInput");
+            filter = input.value.toLowerCase();
+            table = document.getElementById("reponseTable");
+            tr = table.getElementsByTagName("tr");
 
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[3]; 
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+
+        
+        document.getElementById("searchInput").addEventListener("input", filterTable);
+    </script>
 {% endblock %}

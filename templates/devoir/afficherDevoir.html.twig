@@ -1,19 +1,29 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Enseignants{% endblock %}
+{% block title %}Devoires{% endblock %}
 
 {% block body %}
     <div class="card">
             <div class="card-body">
             <div class="pagetitle d-flex justify-content-between align-items-center">
-                    <h5 class="card-title">Liste des enseignants</h5>
-                    <a href="{{ path('add_devoir') }}" class="btn btn-primary"><i class="fa-solid fa-plus"></i></a>
+                    <h5 class="card-title">Liste des devoires</h5>
+                    
+                    <div class="search-bar">
+                      <form class="search-form d-flex align-items-center justify-content-between gap-2" method="POST" action="#">
+                        <label for="searchInput">Nom du cours:</label>
+                        <input type="text"  id="searchInput" placeholder="Cours" class="form-control" title="Enter le nom du cours">
+                        {% if 'ENSEIGNANT' in app.session.get('roles') %}
+                        <a href="{{ path('add_devoir') }}" class="btn btn-primary"><i class="fa-solid fa-plus"></i></a>
+                         {% endif %}
+                      </form>
+                    </div>
             </div>
 
               <!-- Table with hoverable rows -->
-              <table class="table table-hover">
+              <table class="table table-hover" id="devoiresTable">
                 <thead>
                   <tr>
+                        <th scope="col">Nom du devoire</th>
                         <th scope="col">Description</th>
                         <th scope="col">Date de depot</th>
                         <th scope="col">Date de soumission</th>
@@ -29,11 +39,12 @@
                 <tbody>
                         {% for devoire in devoires %}
                             <tr>
-                                <td> {{ devoire.description}}</td>
+                                <td> {{ devoire.nomDevoir }}</td>
+                                <td> {{ devoire.description }}</td>
                                 <td>{{ devoire.dateDepot|date('Y-m-d') }}</td>
                                 <td>{{ devoire.dateSoumission|date('Y-m-d') }}</td>
                                 <td>{{ devoire.images }}</td>
-                                <td>{{ devoire.fichier}}</td>
+                                <td>{{ devoire.fichier }}</td>
                                 <td>{{ devoire.nomCours }}</td>
                                 <td>{{ devoire.fullName }}</td>
                                 {% if 'ENSEIGNANT' in app.session.get('roles') %}
@@ -52,5 +63,28 @@
             </div>
           </div>
 
+      <script>        
+        function filterTable() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("searchInput");
+            filter = input.value.toLowerCase();
+            table = document.getElementById("devoiresTable");
+            tr = table.getElementsByTagName("tr");
 
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[0]; 
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+
+        
+        document.getElementById("searchInput").addEventListener("input", filterTable);
+    </script>
 {% endblock %}

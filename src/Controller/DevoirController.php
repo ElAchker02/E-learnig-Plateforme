@@ -90,7 +90,7 @@ class DevoirController extends AbstractController
         if(in_array('ENSEIGNANT',$roles) || in_array('SUPER-ADMIN',$roles )){
 
             $query = $entityManager->createQueryBuilder()
-            ->select('d.id','d.description','d.dateDepot','d.dateSoumission','d.images','d.fichier','co.nomCours',"CONCAT(p.nom, ' ', p.prenom) AS fullName")
+            ->select('d.id','d.nomDevoir','d.description','d.dateDepot','d.dateSoumission','d.images','d.fichier','co.nomCours',"CONCAT(p.nom, ' ', p.prenom) AS fullName")
             ->from(Devoir::class, 'd')
             ->join(Cours::class, 'co', 'WITH', 'd.id_Cours = co.id')
             ->join(Enseignant::class, 'e', 'WITH', 'd.id_Enseignant = e.id')

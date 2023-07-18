@@ -7,11 +7,16 @@
             <div class="card-body">
             <div class="pagetitle d-flex justify-content-between align-items-center">
                     <h5 class="card-title">Liste des Tests</h5>
-                    <a href="{{ path('add_test') }}" class="btn btn-primary"><i class="fa-solid fa-plus"></i></a>
-                    <div class="form-group">
-                        <label for="searchInput">Search by Test Name:</label>
-                        <input type="text" id="searchInput" class="form-control" placeholder="Search...">
-                    </div>  
+                   
+                    <div class="search-bar">
+                      <form class="search-form d-flex align-items-center justify-content-between gap-2" method="POST" action="#">
+                        <label for="searchInput">Nom du test:</label>
+                        <input type="text"  id="searchInput" placeholder="Test" class="form-control" title="Enter le nom du test">
+                        {% if 'ENSEIGNANT' in app.session.get('roles') %}
+                            <a href="{{ path('add_test') }}" class="btn btn-primary"><i class="fa-solid fa-plus"></i></a>
+                         {% endif %}
+                      </form>
+                    </div>
             </div>
 
 
