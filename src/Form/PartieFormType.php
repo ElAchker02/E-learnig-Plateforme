@@ -19,7 +19,7 @@ class PartieFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('description',TextareaType::class)
+            ->add('description',TextareaType::class,['label' =>'Description',])
             ->add('images',FileType::class,[
                 'mapped' => false,
                 'required' => false, 
@@ -33,20 +33,24 @@ class PartieFormType extends AbstractType
                         'mimeTypesMessage' => 'Uploader une image valid (JPEG ou PNG)',
                     ])
                 ],
+                'label' =>'image',
+
             ])
-            ->add('info',TextareaType::class,['required' => false, ])
-            ->add('avertissement',TextareaType::class,['required' => false, ])
+            ->add('info',TextareaType::class,['required' => false, 'label' =>'Information'])
+            ->add('avertissement',TextareaType::class,['required' => false, 'label' =>'Avertissement' ])
             ->add('id_Chapitre', EntityType::class, [
                 'mapped' => false,
                 'class'=> Chapitre::class,
                 'choice_value' => 'id',
                 'choice_label' => 'nom_chap',
+                'label' =>'Chapitre'
             ])
             ->add('id_cours', EntityType::class, [
                 'mapped' => false,
                 'class'=> Cours::class,
                 'choice_value' => 'id',
                 'choice_label' => 'nom_cours',
+                'label' =>'Cours'
             ])
             ->add('Valider',SubmitType::class)
         ;

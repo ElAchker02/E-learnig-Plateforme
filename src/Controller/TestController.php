@@ -7,14 +7,16 @@ use App\Entity\Test;
 use App\Form\TestFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 
 class TestController extends AbstractController
 {
-    #[Route('/tests', name: 'show_test')]
+    #[Route('/tests', name: 'show_test' , methods:'GET')]
     public function afficherTests(SessionInterface $session,EntityManagerInterface $entityManager): Response
     {
         $roles = $session->get('roles');
@@ -24,9 +26,19 @@ class TestController extends AbstractController
             ->select('t.id','t.nomTest','t.duree')
             ->from(Test::class, 't')
             ->getQuery();
-    
-            $results = $query->getResult(); 
+
+            $results = $query->getResult();
+            // $data = [];
+            // foreach ($results as $result) {
+            //     $data[] = [
+            //         'id' => $result['id'],
+            //         'nomTest' => $result['nomTest'],
+            //         'duree' => $result['duree'],
+            //     ];
+            // }
+            // return new JsonResponse($data);
             return $this->render('test/afficherTest.html.twig', [
+                // 'data' => json_encode($data),
                 'tests' => $results,
             ]);
         }
@@ -44,7 +56,7 @@ class TestController extends AbstractController
             $form = $this->createForm(TestFormType::class, $test);
             $form->handleRequest($request);
 
-            
+
             if ($form->isSubmitted() && $form->isValid()){
 
                 $idCours = $form->get('id_Cours')->getData();
@@ -54,7 +66,7 @@ class TestController extends AbstractController
                 $entityManager->persist($test);
                 $entityManager->flush();
             }
-            
+
             return $this->render('test/addTest.html.twig', [
                 'testForm' => $form->createView(),
             ]);
@@ -78,10 +90,10 @@ class TestController extends AbstractController
 
             $entity = $entityManager->getRepository(Test::class)->find($id);
             $form = $this->createForm(TestFormType::class, $test);
-            
+
             $form->handleRequest($request);
             if($form->isSubmitted() && $form->isValid()){
-                
+
                 $test = $form->getData();
                 $entity->setNomTest($form->get('nomTest')->getData());
                 $entity->setDuree($form->get('duree')->getData());

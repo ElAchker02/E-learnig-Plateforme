@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Chapitre;
 use App\Entity\Cours;
+use App\Entity\Partie;
 use App\Form\ChapitreFormType;
 use App\Repository\ChapitreRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -24,7 +25,7 @@ class ChapitreController extends AbstractController
         if(in_array('ENSEIGNANT',$roles) || in_array('SUPER-ADMIN',$roles )){
 
             $query = $entityManager->createQueryBuilder()
-            ->select('ch.id','ch.nomChap', 'ch.description','ch.video','ch.documents','co.nomCours')
+            ->select('ch.id','co.id as idCours','ch.nomChap', 'ch.description','ch.video','ch.documents','co.nomCours')
             ->from(Chapitre::class, 'ch')
             ->join(Cours::class, 'co', 'WITH', 'ch.id_Cours = co.id')
             ->getQuery();
@@ -128,7 +129,7 @@ class ChapitreController extends AbstractController
             ]);
     }
 
-    #[Route('/delete/{id}', name: 'delete_chapitre')]
+    #[Route('/delete/chapitre/{id}', name: 'delete_chapitre')]
     public function delete(EntityManagerInterface $entityManager, $id): Response
     {
         $entity = $entityManager->getRepository(Chapitre::class)->find($id);
@@ -143,7 +144,7 @@ class ChapitreController extends AbstractController
     {
         $roles = $session->get('roles');
         if(in_array('ENSEIGNANT',$roles) ){
-            $entity = $entityManager->getRepository(Chapitre::class)->find($id);
+            $entity = $entityManager->getRepository(Cours::class)->find($id);
             $chapitre = new Chapitre();
             $form = $this->createForm(ChapitreFormType::class, $chapitre);
             $form->remove('id_Cours');

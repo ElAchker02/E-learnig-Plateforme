@@ -375,7 +375,7 @@
         </a>
         <ul id="tables-nav2" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
-            <a href="{{path('show_test')}}">
+            <a href="{{path('show_test')}}" id="btnTests">
               <i class="bi bi-circle"></i><span>Tests</span>
             </a>
           </li>
@@ -444,9 +444,31 @@
   <script src="{{asset('vendor/simple-datatables/simple-datatables.js')}}"></script>
   <script src="{{asset('vendor/tinymce/tinymce.min.js')}}"></script>
   <script src="{{asset('vendor/php-email-form/validate.js')}}"></script>
+  {# <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script> #}
 
   <!-- Template Main JS File -->
   <script src="{{asset('js/main.js')}}"></script>
+
+    {# <script>
+    $(document).ready(function() {
+        $("#btnTests").on("click", function(event) {
+          $.ajax({
+                url: '/tests',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    var listeHtml = '';
+                   
+                    $('#bodyTable').html('fddsf');
+                },
+                error: function (xhr, status, error) {
+                    console.error('Erreur lors de la récupération des tests : ' + error);
+                }
+            });
+        
+        });
+    });
+    </script> #}
 {% endblock %}
 </body>
 

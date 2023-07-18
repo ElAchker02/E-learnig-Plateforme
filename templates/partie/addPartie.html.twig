@@ -10,14 +10,15 @@
     <div class="pagetitle">
         <h1>Ajouter une partie d'un chapitre</h1>
     </div>
-    {{ form_start(PartieForm) }}
+    {# {{ form_start(PartieForm) }}
                         {{ form_row(PartieForm.description , {label : "Description "}) }}
                         {{ form_row(PartieForm.images , {label : "image "}) }}
                         {{ form_row(PartieForm.info , {label : "Informations "}) }}
                         {{ form_row(PartieForm.avertissement , {label : "Avertissement "}) }}
                         {{ form_row(PartieForm.id_cours , {label : "Cours "}) }}
                         {{ form_row(PartieForm.id_Chapitre , {label : "Chapitre "}) }}
-        {{ form_end(PartieForm) }}
+        {{ form_end(PartieForm) }} #}
+        {{ form(PartieForm)}}
 </div>
 
 {% endblock %}

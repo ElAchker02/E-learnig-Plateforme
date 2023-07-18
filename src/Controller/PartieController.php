@@ -26,14 +26,12 @@ class PartieController extends AbstractController
         if(in_array('ENSEIGNANT',$roles) || in_array('SUPER-ADMIN',$roles)){
 
             $query = $entityManager->createQueryBuilder()
-            ->select('p.id','p.description', 'p.images','p.info','p.avertissement','co.nomCours','ch.nomChap','co.nomCours')
+            ->select('p.id','co.id as idCours','p.description', 'p.images','p.info','p.avertissement','co.nomCours','ch.nomChap','co.nomCours')
             ->from(Partie::class, 'p')
             ->join(Chapitre::class, 'ch', 'WITH', 'ch.id = p.id_Chapitre')
             ->join(Cours::class, 'co', 'WITH', 'co.id = p.id_cours')
             ->getQuery();
             $results = $query->getResult(); 
-            // $data = $partieRepository->findAll(); 
-
             return $this->render('partie/afficherPartie.html.twig', [
                 'parties' => $results,
             ]);
@@ -119,7 +117,7 @@ class PartieController extends AbstractController
             ]);
     }
     
-    #[Route('/delete/{id}', name: 'delete_partie')]
+    #[Route('/delete/partie/{id}', name: 'delete_partie')]
     public function delete(EntityManagerInterface $entityManager, $id): Response
     {
         $entity = $entityManager->getRepository(Partie::class)->find($id);
@@ -127,5 +125,57 @@ class PartieController extends AbstractController
         $entityManager->remove($entity);
         $entityManager->flush();
         return $this->redirectToRoute('app_partie');
+    }
+
+    #[Route('/ajouter/partie/{id}/{id2}', name: 'add_partie2')]
+    public function AddChapitre2($id,$id2,SessionInterface $session,Request $request,EntityManagerInterface $entityManager,SluggerInterface $slugger): Response
+    {
+        $roles = $session->get('roles');
+        if(in_array('ENSEIGNANT',$roles) ){
+            $chapitre = $entityManager->getRepository(Chapitre::class)->find($id);
+            $cours = $entityManager->getRepository(Cours::class)->find($id2);
+            $partie = new Partie();
+            $form = $this->createForm(PartieFormType::class, $partie);
+            $form->remove('id_cours');
+            $form->remove('id_Chapitre');
+            $form->handleRequest($request);
+
+            
+            if ($form->isSubmitted() && $form->isValid()){
+
+                // $idCours = $form->get('id_cours')->getData();
+                // $cours = $entityManager->getRepository(Cours::class)->find($idCours);
+                $partie->setIdCours($cours);
+                // $idChap = $form->get('id_Chapitre')->getData();
+                // $chapitre = $entityManager->getRepository(Chapitre::class)->find($idChap);
+                $partie->setIdChapitre($chapitre);
+
+                $image = $form->get('images')->getData();
+                if ($image) {
+                    $originalFilename = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+                    $safeFilename = $slugger->slug($originalFilename);
+                    $newFilename = $safeFilename.'-'.uniqid().'.'.$image->guessExtension();
+                    try {
+                        $image->move(
+                            $this->getParameter('image_directory2'),
+                            $newFilename
+                        );
+                    } catch (FileException $e) {
+
+                    }
+                    $partie->setImages($newFilename);
+                }
+
+                $entityManager->persist($partie);
+                $entityManager->flush();
+            }
+            
+            return $this->render('partie/addPartie.html.twig', [
+                'PartieForm' => $form->createView(),
+            ]);
+        }
+        return $this->render('home/index.html.twig', [
+            'controller_name' => 'AddCoursController',
+        ]);
     }
 }

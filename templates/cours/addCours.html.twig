@@ -6,7 +6,11 @@
 
 
 <div class="example-wrapper">
-
+          {% if successMessage is not empty %}
+                      <div class="alert alert-success">
+                          {{ successMessage }}
+                      </div>
+            {% endif %}
     <div class="pagetitle">
         <h1>Ajouter un cours</h1>
     </div>

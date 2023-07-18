@@ -8,10 +8,14 @@
             <div class="pagetitle d-flex justify-content-between align-items-center">
                     <h5 class="card-title">Liste des Tests</h5>
                     <a href="{{ path('add_test') }}" class="btn btn-primary"><i class="fa-solid fa-plus"></i></a>
+                    <div class="form-group">
+                        <label for="searchInput">Search by Test Name:</label>
+                        <input type="text" id="searchInput" class="form-control" placeholder="Search...">
+                    </div>  
             </div>
 
-              <!-- Table with hoverable rows -->
-              <table class="table table-hover">
+
+              <table class="table table-hover" id="testsTable">
                 <thead>
                   <tr>
                         <th scope="col">Nom du test</th>
@@ -19,7 +23,7 @@
                         <th scope="col">Actions</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody id="bodyTable">
                         {% for test in tests %}
                             <tr>
                                 <td> {{ test.nomTest }}</td>
@@ -34,10 +38,33 @@
 
                 </tbody>
               </table>
-              <!-- End Table with hoverable rows -->
 
             </div>
           </div>
+      <script>
+        
+        function filterTable() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("searchInput");
+            filter = input.value.toLowerCase();
+            table = document.getElementById("testsTable");
+            tr = table.getElementsByTagName("tr");
 
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[0]; 
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+
+        
+        document.getElementById("searchInput").addEventListener("input", filterTable);
+    </script>
 
 {% endblock %}

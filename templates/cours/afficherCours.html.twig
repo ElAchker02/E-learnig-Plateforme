@@ -1,20 +1,39 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello AfficherCoursController!{% endblock %}
+{% block title %}Cours{% endblock %}
 
 {% block body %}
         <div class="pagetitle d-flex justify-content-between align-items-center">
             <h1>List des cours</h1>
-            {% if 'ENSEIGNANT' in app.session.get('roles') %}
-              <a href="{{ path('app_add_cours') }}" class="btn btn-primary"><i class="fa-solid fa-plus"></i></a>
-            {% endif %}
+           
+              
             
+             <div class="search-bar">
+              <form class="search-form d-flex align-items-center justify-content-between gap-2" method="POST" action="#">
+                <label for="searchInput">Nom du cours:</label>
+                <input type="text"  id="searchInput" placeholder="Cours" class="form-control" title="Enter le nom du cours">
+                 {% if 'ENSEIGNANT' in app.session.get('roles') %}
+                <a href="{{ path('app_add_cours') }}" class="btn btn-primary"><i class="fa-solid fa-plus"></i></a>
+                {% endif %}
+              </form>
+              
+            </div>
         </div>
+ 
       <div class="row">
+      {% if successMessage is not empty %}
+                      <div class="alert alert-success">
+                          {{ successMessage }}
+                      </div>
+                        
+            {% endif %}
       {% for cour in cours %}
           
             <div class="col-sm">
+            
+            
               <div class="card">
+                  
                 <div class="card-body">
                   <div class="d-flex justify-content-between">
                     <h5 class="card-title">{{ cour.nomCours}}</h5>
@@ -57,4 +76,29 @@
         
       {% endfor %}
     </div>
+
+    <script>
+        
+        function filterTable() {
+            var input, filter, cards, card, cardTitle, i, txtValue;
+            input = document.getElementById("searchInput");
+            filter = input.value.toLowerCase();
+            cards = document.getElementsByClassName("card");
+
+            for (i = 0; i < cards.length; i++) {
+                card = cards[i];
+                cardTitle = card.getElementsByClassName("card-title")[0];
+                if (cardTitle) {
+                    txtValue = cardTitle.textContent || cardTitle.innerText;
+                    if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                        card.style.display = "";
+                    } else {
+                        card.style.display = "none";
+                    }
+                }
+            }
+        }
+
+        document.getElementById("searchInput").addEventListener("input", filterTable);
+         </script>
 {% endblock %}
