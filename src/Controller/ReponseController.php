@@ -98,18 +98,26 @@ class ReponseController extends AbstractController
         ]);
     }
     #[Route('/delete/reponse/{id}', name: 'delete_rep')]
-    public function delete(EntityManagerInterface $entityManager, $id): Response
+    public function delete(SessionInterface $session,EntityManagerInterface $entityManager, $id): Response
     {
-        $entity = $entityManager->getRepository(Reponse::class)->find($id);
+        $roles = $session->get('roles');
+        if(in_array('ENSEIGNANT',$roles) ){
+            $entity = $entityManager->getRepository(Reponse::class)->find($id);
 
         $entityManager->remove($entity);
         $entityManager->flush();
         return $this->redirectToRoute('show_reponse');
+        }
+        return $this->render('home/index.html.twig', [
+            'controller_name' => 'AddCoursController',
+        ]);
+        
     }
 
     #[Route('/modifier/reponse/{id}', name: 'edit_rep')]
-    public function ModifierTest(EntityManagerInterface $entityManager,Reponse $reponse,Request $request,$id){
-
+    public function ModifierTest(SessionInterface $session,EntityManagerInterface $entityManager,Reponse $reponse,Request $request,$id){
+        $roles = $session->get('roles');
+        if(in_array('ENSEIGNANT',$roles) ){
             $entity = $entityManager->getRepository(Reponse::class)->find($id);
             $form = $this->createForm(ReponseFormType::class, $reponse);
             
@@ -127,5 +135,10 @@ class ReponseController extends AbstractController
             return $this->render('question/addQuestion.html.twig', [
                 'questionForm' => $form->createView(),
             ]);
+        }
+        return $this->render('home/index.html.twig', [
+            'controller_name' => 'AddCoursController',
+        ]);
+           
     }
 }

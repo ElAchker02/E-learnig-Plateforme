@@ -82,8 +82,9 @@ class AdminsController extends AbstractController
 
     
     #[Route('/modifier/admin/{id}}', name: 'edit_admin')]
-    public function ModifierCours(EntityManagerInterface $entityManager,SluggerInterface $slugger,User $user,Request $request,$id,UserPasswordHasherInterface $userPasswordHasher){
-
+    public function ModifierCours(SessionInterface $session,EntityManagerInterface $entityManager,SluggerInterface $slugger,User $user,Request $request,$id,UserPasswordHasherInterface $userPasswordHasher){
+        $roles = $session->get('roles');
+        if(in_array('SUPER-ADMIN',$roles)  ){
             $entity = $entityManager->getRepository(User::class)->find($id);
             $form = $this->createForm(RegistrationFormType::class, $user);
             $session = $request->getSession();
@@ -130,13 +131,25 @@ class AdminsController extends AbstractController
             return $this->render('registration/register.html.twig', [
                 'registrationForm' => $form->createView(),
             ]);
+        }
+        return $this->render('home/index.html.twig', [
+            'controller_name' => 'AddCoursController',
+        ]);
+            
     }
     #[Route('/delete/admin/{id}', name: 'delete_admin')]
-    public function delete(EntityManagerInterface $entityManager, $id): Response
+    public function delete(SessionInterface $session,EntityManagerInterface $entityManager, $id): Response
     {
-        $entity2 = $entityManager->getRepository(Personne::class)->find($id);
+        $roles = $session->get('roles');
+        if(in_array('SUPER-ADMIN',$roles)  ){
+            $entity2 = $entityManager->getRepository(Personne::class)->find($id);
         $entityManager->remove($entity2);
         $entityManager->flush();
         return $this->redirectToRoute('show_admins');
+        }
+        return $this->render('home/index.html.twig', [
+            'controller_name' => 'AddCoursController',
+        ]);
+        
     }
 }

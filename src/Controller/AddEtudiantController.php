@@ -55,7 +55,7 @@ class AddEtudiantController extends AbstractController
 
     }
     #[Route('/etudiants', name: 'show_etudiants')]
-    public function AfficherEnseignant(SessionInterface $session,EntityManagerInterface $entityManager): Response
+    public function AfficherEtudiant(SessionInterface $session,EntityManagerInterface $entityManager): Response
     {
         $roles = $session->get('roles');
         if(in_array('SUPER-ADMIN',$roles) || in_array('ADMIN',$roles) ){
@@ -79,8 +79,10 @@ class AddEtudiantController extends AbstractController
     }
 
     #[Route('/modifier/etudiant/{id}/{id2}', name: 'edit_etudiant')]
-    public function ModifierCours(EntityManagerInterface $entityManager,Personne $personne,Request $request,$id,$id2){
+    public function ModifierCours(SessionInterface $session,EntityManagerInterface $entityManager,Personne $personne,Request $request,$id,$id2){
 
+        $roles = $session->get('roles');
+        if(in_array('SUPER-ADMIN',$roles) || in_array('ADMIN',$roles) ){
             $entity = $entityManager->getRepository(Etudiant::class)->find($id2);
             $form = $this->createForm(PersonneFormType::class, $personne);
             $session = $request->getSession();
@@ -107,6 +109,11 @@ class AddEtudiantController extends AbstractController
             return $this->render('registration/addEnseignant.html.twig', [
                 'PersonneForm' => $form->createView(),
             ]);
+        }
+        return $this->render('home/index.html.twig', [
+            'controller_name' => 'AddCoursController',
+        ]);
+            
     }
 
     #[Route('/delete/etudiant/{id}', name: 'delete_etudiant')]

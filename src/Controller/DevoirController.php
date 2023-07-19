@@ -110,18 +110,27 @@ class DevoirController extends AbstractController
         ]);;
     }
     #[Route('/delete/devoir/{id}', name: 'delete_devoir')]
-    public function delete(EntityManagerInterface $entityManager, $id): Response
+    public function delete(SessionInterface $session,EntityManagerInterface $entityManager, $id): Response
     {
-        $entity = $entityManager->getRepository(Devoir::class)->find($id);
+        $roles = $session->get('roles');
+        if(in_array('ENSEIGNANT',$roles) ){
+            $entity = $entityManager->getRepository(Devoir::class)->find($id);
 
-        $entityManager->remove($entity);
-        $entityManager->flush();
-        return $this->redirectToRoute('show_devoires');
+            $entityManager->remove($entity);
+            $entityManager->flush();
+            return $this->redirectToRoute('show_devoires');
+        }
+        return $this->render('home/index.html.twig', [
+            'controller_name' => 'AddCoursController',
+        ]);
+        
     }
 
     #[Route('/modifier/devoir/{id}', name: 'edit_devoir')]
-    public function ModifierCours(EntityManagerInterface $entityManager,Devoir $devoir,Request $request,$id){
+    public function ModifierCours(SessionInterface $session,EntityManagerInterface $entityManager,Devoir $devoir,Request $request,$id){
 
+        $roles = $session->get('roles');
+        if(in_array('ENSEIGNANT',$roles) ){
             $entity = $entityManager->getRepository(Devoir::class)->find($id);
             $form = $this->createForm(DevoirFormType::class, $devoir);
             $form->handleRequest($request);
@@ -146,5 +155,10 @@ class DevoirController extends AbstractController
             return $this->render('devoir/addDevoir.html.twig', [
                 'DevoirForm' => $form->createView(),
             ]);
+        }
+        return $this->render('home/index.html.twig', [
+            'controller_name' => 'AddCoursController',
+        ]);
+           
     }
 }

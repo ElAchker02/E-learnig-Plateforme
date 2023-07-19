@@ -71,7 +71,7 @@ class AddCoursController extends AbstractController
     {
         $roles = $session->get('roles');
         
-        if(in_array('ENSEIGNANT',$roles) || in_array('SUPER-ADMIN',$roles ) || in_array('ADMIN',$roles)){
+        if(in_array('ENSEIGNANT',$roles)){
             $successMessage = $request->query->get('successMessage');
             $query = $entityManager->createQueryBuilder()
             ->select('c.id','c.nomCours', 'c.introduction','c.datePublication','c.nbChapitres','c.estPayant','c.prix', "CONCAT(p.nom, ' ', p.prenom) AS fullName","ca.nomCat")
@@ -81,6 +81,22 @@ class AddCoursController extends AbstractController
             ->join(Categorie::class, 'ca', 'WITH', 'c.id_Categorie = ca.id')
             ->where('e.id = :idEnseignant') 
             ->setParameter('idEnseignant', reset($roles))
+            ->getQuery();
+            $results = $query->getResult();
+
+            return $this->render('cours/afficherCours.html.twig', [
+                'cours' => $results,
+                'successMessage' => $successMessage,
+            ]);
+        }
+        elseif( in_array('SUPER-ADMIN',$roles ) || in_array('ADMIN',$roles)){
+            $successMessage = $request->query->get('successMessage');
+            $query = $entityManager->createQueryBuilder()
+            ->select('c.id','c.nomCours', 'c.introduction','c.datePublication','c.nbChapitres','c.estPayant','c.prix', "CONCAT(p.nom, ' ', p.prenom) AS fullName","ca.nomCat")
+            ->from(Cours::class, 'c')
+            ->join(Enseignant::class, 'e', 'WITH', 'c.id_Enseignant = e.id')
+            ->join(Personne::class, 'p', 'WITH', 'e.id_personne = p.id')
+            ->join(Categorie::class, 'ca', 'WITH', 'c.id_Categorie = ca.id')
             ->getQuery();
             $results = $query->getResult();
 
@@ -133,14 +149,21 @@ class AddCoursController extends AbstractController
     }
 
     #[Route('/delete/cours/{id}', name: 'delete_cours')]
-    public function delete(EntityManagerInterface $entityManager, $id): Response
+    public function delete(SessionInterface $session,EntityManagerInterface $entityManager, $id): Response
     {
-        $entity = $entityManager->getRepository(Cours::class)->find($id);
+        $roles = $session->get('roles');
+        if(in_array('ENSEIGNANT',$roles)  ){
+            $entity = $entityManager->getRepository(Cours::class)->find($id);
 
         $entityManager->remove($entity);
         $entityManager->flush();
 
         return $this->redirectToRoute('show_cours');
+        }
+        return $this->render('home/index.html.twig', [
+            'controller_name' => 'AddCoursController',
+        ]);
+        
     }
 
     

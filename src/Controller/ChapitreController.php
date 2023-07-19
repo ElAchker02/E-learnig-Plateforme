@@ -107,8 +107,14 @@ class ChapitreController extends AbstractController
         ]);
     }
     #[Route('/modifier/chapitre/{id}', name: 'edit_chapitre')]
-    public function ModifierCours(EntityManagerInterface $entityManager,Chapitre $chapitre,Request $request,$id){
+    public function ModifierCours(SessionInterface $session,EntityManagerInterface $entityManager,Chapitre $chapitre,Request $request,$id){
+        $roles = $session->get('roles');
+        if(in_array('ENSEIGNANT',$roles) ){
 
+        }
+        return $this->render('home/index.html.twig', [
+            'controller_name' => 'AddCoursController',
+        ]);
             $entity = $entityManager->getRepository(Chapitre::class)->find($id);
             $form = $this->createForm(ChapitreFormType::class, $chapitre);
             
@@ -134,13 +140,20 @@ class ChapitreController extends AbstractController
     }
 
     #[Route('/delete/chapitre/{id}', name: 'delete_chapitre')]
-    public function delete(EntityManagerInterface $entityManager, $id): Response
+    public function delete(SessionInterface $session,EntityManagerInterface $entityManager, $id): Response
     {
-        $entity = $entityManager->getRepository(Chapitre::class)->find($id);
+        $roles = $session->get('roles');
+        if(in_array('ENSEIGNANT',$roles) ){
+            $entity = $entityManager->getRepository(Chapitre::class)->find($id);
 
         $entityManager->remove($entity);
         $entityManager->flush();
         return $this->redirectToRoute('app_chapitre');
+        }
+        return $this->render('home/index.html.twig', [
+            'controller_name' => 'AddCoursController',
+        ]);
+        
     }
 
     #[Route('/ajouter/chapitre/{id}', name: 'add_chapitre2')]

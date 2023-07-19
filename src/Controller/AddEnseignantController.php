@@ -83,8 +83,10 @@ class AddEnseignantController extends AbstractController
     }
 
     #[Route('/modifier/enseignant/{id}/{id2}', name: 'edit_enseignant')]
-    public function ModifierCours(EntityManagerInterface $entityManager,Personne $personne,Request $request,$id,$id2){
+    public function ModifierCours(SessionInterface $session,EntityManagerInterface $entityManager,Personne $personne,Request $request,$id,$id2){
 
+        $roles = $session->get('roles');
+        if(in_array('SUPER-ADMIN',$roles) || in_array('ADMIN',$roles) ){
             $entity = $entityManager->getRepository(Enseignant::class)->find($id2);
             $form = $this->createForm(PersonneFormType::class, $personne);
             $session = $request->getSession();
@@ -111,13 +113,24 @@ class AddEnseignantController extends AbstractController
             return $this->render('registration/addEnseignant.html.twig', [
                 'PersonneForm' => $form->createView(),
             ]);
+        }
+        return $this->render('home/index.html.twig', [
+            'controller_name' => 'AddCoursController',
+        ]);
     }
     #[Route('/delete/enseignant/{id}', name: 'delete_enseignant')]
-    public function delete(EntityManagerInterface $entityManager, $id): Response
+    public function delete(SessionInterface $session,EntityManagerInterface $entityManager, $id): Response
     {
-        $entity2 = $entityManager->getRepository(Personne::class)->find($id);
-        $entityManager->remove($entity2);
-        $entityManager->flush();
-        return $this->redirectToRoute('show_enseignant');
+        $roles = $session->get('roles');
+        if(in_array('SUPER-ADMIN',$roles) || in_array('ADMIN',$roles) ){
+            $entity2 = $entityManager->getRepository(Personne::class)->find($id);
+            $entityManager->remove($entity2);
+            $entityManager->flush();
+            return $this->redirectToRoute('show_enseignant');
+        }
+        return $this->render('home/index.html.twig', [
+            'controller_name' => 'AddCoursController',
+        ]);
+        
     }
 }

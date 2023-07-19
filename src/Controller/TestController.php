@@ -72,18 +72,27 @@ class TestController extends AbstractController
         ]);
     }
     #[Route('/delete/test/{id}', name: 'delete_Test')]
-    public function delete(EntityManagerInterface $entityManager, $id): Response
+    public function delete(SessionInterface $session,EntityManagerInterface $entityManager, $id): Response
     {
-        $entity = $entityManager->getRepository(Test::class)->find($id);
+        $roles = $session->get('roles');
+        if(in_array('ENSEIGNANT',$roles) ){
+            $entity = $entityManager->getRepository(Test::class)->find($id);
 
-        $entityManager->remove($entity);
-        $entityManager->flush();
-        return $this->redirectToRoute('show_test');
+            $entityManager->remove($entity);
+            $entityManager->flush();
+            return $this->redirectToRoute('show_test');
+        }
+        return $this->render('home/index.html.twig', [
+            'controller_name' => 'AddCoursController',
+        ]);
+
     }
 
     #[Route('/modifier/test/{id}', name: 'edit_test')]
-    public function ModifierTest(EntityManagerInterface $entityManager,Test $test,Request $request,$id){
+    public function ModifierTest(SessionInterface $session,EntityManagerInterface $entityManager,Test $test,Request $request,$id){
 
+        $roles = $session->get('roles');
+        if(in_array('ENSEIGNANT',$roles) ){
             $entity = $entityManager->getRepository(Test::class)->find($id);
             $form = $this->createForm(TestFormType::class, $test);
 
@@ -101,5 +110,10 @@ class TestController extends AbstractController
             return $this->render('test/addTest.html.twig', [
                 'testForm' => $form->createView(),
             ]);
+        }       
+        return $this->render('home/index.html.twig', [
+            'controller_name' => 'AddCoursController',
+        ]);
+            
     }
 }

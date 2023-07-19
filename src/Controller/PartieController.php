@@ -94,8 +94,10 @@ class PartieController extends AbstractController
     }
 
     #[Route('/modifier/partie/{id}', name: 'edit_partie')]
-    public function ModifierCours(EntityManagerInterface $entityManager,Partie $partie,Request $request,$id){
+    public function ModifierCours(SessionInterface $session,EntityManagerInterface $entityManager,Partie $partie,Request $request,$id){
 
+        $roles = $session->get('roles');
+        if(in_array('ENSEIGNANT',$roles) ){
             $entity = $entityManager->getRepository(Partie::class)->find($id);
             $form = $this->createForm(PartieFormType::class, $partie);
             $form->handleRequest($request);
@@ -119,16 +121,28 @@ class PartieController extends AbstractController
             return $this->render('partie/addPartie.html.twig', [
                 'PartieForm' => $form->createView(),
             ]);
+        }
+        return $this->render('home/index.html.twig', [
+            'controller_name' => 'AddCoursController',
+        ]);
+           
     }
     
     #[Route('/delete/partie/{id}', name: 'delete_partie')]
-    public function delete(EntityManagerInterface $entityManager, $id): Response
+    public function delete(SessionInterface $session,EntityManagerInterface $entityManager, $id): Response
     {
-        $entity = $entityManager->getRepository(Partie::class)->find($id);
+        $roles = $session->get('roles');
+        if(in_array('ENSEIGNANT',$roles) ){
+            $entity = $entityManager->getRepository(Partie::class)->find($id);
 
-        $entityManager->remove($entity);
-        $entityManager->flush();
-        return $this->redirectToRoute('app_partie');
+            $entityManager->remove($entity);
+            $entityManager->flush();
+            return $this->redirectToRoute('app_partie');
+        }
+        return $this->render('home/index.html.twig', [
+            'controller_name' => 'AddCoursController',
+        ]);
+
     }
 
     #[Route('/ajouter/partie/{id}/{id2}', name: 'add_partie2')]
