@@ -108,6 +108,7 @@ class ChapitreController extends AbstractController
 
                 $entityManager->persist($chapitre);
                 $entityManager->flush();
+                $this->addFlash('success', 'L\'ajout a été effectué avec succès.');
             }
             
             return $this->render('chapitre/addChapitre.html.twig', [
@@ -141,8 +142,8 @@ class ChapitreController extends AbstractController
                 $cours = $entityManager->getRepository(Cours::class)->find($form->get('id_Cours')->getData());
                 $entity->setIdCours($cours);
                 $entityManager->flush();
+                $this->addFlash('success', 'La modification a été effectué avec succès.');
 
-                // $this->FlashMessage->add("success","Cours Modifié");
                 return $this->redirectToRoute('app_chapitre');
                 // dd($etudiant);
             }
@@ -160,6 +161,7 @@ class ChapitreController extends AbstractController
 
         $entityManager->remove($entity);
         $entityManager->flush();
+        $this->addFlash('success', 'La supression a été effectué avec succès.');
         return $this->redirectToRoute('app_chapitre');
         }
         return $this->render('home/index.html.twig', [
@@ -219,6 +221,7 @@ class ChapitreController extends AbstractController
 
                 $entityManager->persist($chapitre);
                 $entityManager->flush();
+                $this->addFlash('success', 'L\'ajout a été effectué avec succès.');
             }
             
             return $this->render('chapitre/addChapitre.html.twig', [

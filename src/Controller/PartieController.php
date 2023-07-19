@@ -94,6 +94,7 @@ class PartieController extends AbstractController
 
                 $entityManager->persist($partie);
                 $entityManager->flush();
+                $this->addFlash('success', 'L\'ajout a été effectué avec succès.');
             }
             
             return $this->render('partie/addPartie.html.twig', [
@@ -126,7 +127,7 @@ class PartieController extends AbstractController
                 $entity->setIdCours($cours);
                 $entityManager->flush();
 
-                // $this->FlashMessage->add("success","Cours Modifié");
+                $this->addFlash('success', 'La modification a été effectué avec succès.');
                 return $this->redirectToRoute('app_partie');
                 // dd($etudiant);
             }
@@ -149,6 +150,7 @@ class PartieController extends AbstractController
 
             $entityManager->remove($entity);
             $entityManager->flush();
+            $this->addFlash('success', 'La supression a été effectué avec succès.');
             return $this->redirectToRoute('app_partie');
         }
         return $this->render('home/index.html.twig', [

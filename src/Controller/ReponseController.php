@@ -73,6 +73,7 @@ class ReponseController extends AbstractController
 
                 $entityManager->persist($reponse);
                 $entityManager->flush();
+                $this->addFlash('success', 'L\'ajout a été effectué avec succès.');
             }
             
             return $this->render('reponse/addReponse.html.twig', [
@@ -100,6 +101,7 @@ class ReponseController extends AbstractController
                 $reponse->setIdQuestion($entity);   
                 $entityManager->persist($reponse);
                 $entityManager->flush();
+                $this->addFlash('success', 'L\'ajout a été effectué avec succès.');
             }
             
             return $this->render('reponse/addReponse.html.twig', [
@@ -119,6 +121,7 @@ class ReponseController extends AbstractController
 
         $entityManager->remove($entity);
         $entityManager->flush();
+        $this->addFlash('success', 'La supression a été effectué avec succès.');
         return $this->redirectToRoute('show_reponse');
         }
         return $this->render('home/index.html.twig', [
@@ -143,6 +146,7 @@ class ReponseController extends AbstractController
                 $question = $entityManager->getRepository(Question::class)->find($form->get('id_Question')->getData());
                 $entity->setIdQuestion($question);
                 $entityManager->flush();
+                $this->addFlash('success', 'La modification a été effectué avec succès.');
                 return $this->redirectToRoute('show_reponse');
             }
             return $this->render('question/addQuestion.html.twig', [

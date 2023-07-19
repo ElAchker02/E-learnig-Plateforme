@@ -41,6 +41,7 @@ class AddEnseignantController extends AbstractController
                 $enseignant->setSpecialite($specialite);
                 $entityManager->persist($enseignant);
                 $entityManager->flush();
+                $this->addFlash('success', 'L\'ajout a été effectué avec succès.');
                 return $this->redirectToRoute('app_register', ['id' => $id,
                 "specialite"=>$specialite,
                 "idE"=> $enseignant->getId()]);
@@ -106,9 +107,7 @@ class AddEnseignantController extends AbstractController
                 $entity->setSpecialite($form->get('specialite')->getData());
                 $entityManager->flush();
 
-                // $this->FlashMessage->add("success","Cours Modifié");
-                return $this->redirectToRoute('show_enseignant');
-                // dd($etudiant);
+                $this->addFlash('success', 'La modification a été effectué avec succès.');
             }
             return $this->render('registration/addEnseignant.html.twig', [
                 'PersonneForm' => $form->createView(),
@@ -126,6 +125,7 @@ class AddEnseignantController extends AbstractController
             $entity2 = $entityManager->getRepository(Personne::class)->find($id);
             $entityManager->remove($entity2);
             $entityManager->flush();
+            $this->addFlash('success', 'La supression a été effectué avec succès.');
             return $this->redirectToRoute('show_enseignant');
         }
         return $this->render('home/index.html.twig', [

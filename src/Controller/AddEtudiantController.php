@@ -34,6 +34,7 @@ class AddEtudiantController extends AbstractController
             $etudiant->setFiliere($filiere);
             $entityManager->persist($etudiant);
             $entityManager->flush();
+            $this->addFlash('success', 'L\'ajout a été effectué avec succès.');
             return $this->redirectToRoute('app_register', ['id' => $id,
             "filiere"=>$filiere,
             "Utilisateur"=>"etudiant"]);
@@ -55,9 +56,9 @@ class AddEtudiantController extends AbstractController
             ->from(Personne::class, 'p')
             ->join(Etudiant::class, 'e', 'WITH', 'e.id_personne = p.id')
             ->getQuery();
-    
+            
             $results = $query->getResult();
-
+            
             return $this->render('etudiants/afficherEtudiants.html.twig', [
                 'etudiants' => $results,
             ]);
@@ -93,7 +94,7 @@ class AddEtudiantController extends AbstractController
                 $entity->setFiliere($form->get('filiere')->getData());
                 $entityManager->flush();
 
-                // $this->FlashMessage->add("success","Cours Modifié");
+                $this->addFlash('success', 'La modification a été effectué avec succès.');
                 return $this->redirectToRoute('show_etudiants');
                 // dd($etudiant);
             }
@@ -115,6 +116,7 @@ class AddEtudiantController extends AbstractController
             $entity2 = $entityManager->getRepository(Personne::class)->find($id);
             $entityManager->remove($entity2);
             $entityManager->flush();
+            $this->addFlash('success', 'La supression a été effectué avec succès.');
             return $this->redirectToRoute('show_etudiants');
         }
         return $this->render('home/index.html.twig', [

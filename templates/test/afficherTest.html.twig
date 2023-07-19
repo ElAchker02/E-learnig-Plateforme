@@ -19,6 +19,12 @@
                     </div>
             </div>
 
+       {% for flashMessage in app.session.flashBag.get('success') %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ flashMessage }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
 
               <table class="table table-hover" id="testsTable">
                 <thead>

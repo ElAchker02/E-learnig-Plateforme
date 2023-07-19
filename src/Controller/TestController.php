@@ -14,9 +14,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+use Symfony\Component\Notifier\Notification\Notification;
+use Symfony\Component\Notifier\NotifierInterface;
 
 class TestController extends AbstractController
 {
+    
     #[Route('/tests', name: 'show_test' , methods:'GET')]
     public function afficherTests(SessionInterface $session,EntityManagerInterface $entityManager): Response
     {
@@ -53,7 +56,7 @@ class TestController extends AbstractController
     }
 
     #[Route('/ajouter/test', name: 'add_test')]
-    public function ajouterTests(SessionInterface $session,Request $request,EntityManagerInterface $entityManager): Response
+    public function ajouterTests(NotifierInterface $notifier,SessionInterface $session,Request $request,EntityManagerInterface $entityManager): Response
     {
         $roles = $session->get('roles');
         if(in_array('ENSEIGNANT',$roles) ){
@@ -72,6 +75,7 @@ class TestController extends AbstractController
 
                 $entityManager->persist($test);
                 $entityManager->flush();
+                $this->addFlash('success', 'L\'ajout a été effectué avec succès.');
             }
 
             return $this->render('test/addTest.html.twig', [
@@ -91,6 +95,7 @@ class TestController extends AbstractController
 
             $entityManager->remove($entity);
             $entityManager->flush();
+            $this->addFlash('success', 'La supression a été effectué avec succès.');
             return $this->redirectToRoute('show_test');
         }
         return $this->render('home/index.html.twig', [
@@ -116,6 +121,7 @@ class TestController extends AbstractController
                 $cours = $entityManager->getRepository(Cours::class)->find($form->get('id_Cours')->getData());
                 $entity->setIdCours($cours);
                 $entityManager->flush();
+                $this->addFlash('success', 'La modification a été effectué avec succès.');
                 return $this->redirectToRoute('show_test');
             }
             return $this->render('test/addTest.html.twig', [

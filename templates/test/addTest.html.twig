@@ -10,6 +10,14 @@
     <div class="pagetitle">
         <h1>Ajouter un test</h1>
     </div>
+{% for flashMessage in app.session.flashBag.get('success') %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ flashMessage }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+{% endfor %}
+
+
     {{ form_start(testForm) }}
                         {{ form_row(testForm.nomTest , {label : "Nom du test "}) }}
                         {{ form_row(testForm.duree , {label : "duree "}) }}

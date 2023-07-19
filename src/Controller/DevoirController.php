@@ -73,6 +73,7 @@ class DevoirController extends AbstractController
 
                 $entityManager->persist($devoir);
                 $entityManager->flush();    
+                $this->addFlash('success', 'L\'ajout a été effectué avec succès.');
             }
             
             return $this->render('devoir/addDevoir.html.twig', [
@@ -132,6 +133,7 @@ class DevoirController extends AbstractController
 
             $entityManager->remove($entity);
             $entityManager->flush();
+            $this->addFlash('success', 'La supression a été effectué avec succès.');
             return $this->redirectToRoute('show_devoires');
         }
         return $this->render('home/index.html.twig', [
@@ -161,7 +163,7 @@ class DevoirController extends AbstractController
                 $enseignant = $entityManager->getRepository(Enseignant::class)->find(reset($roles));
                 $entity->setIdEnseignant($enseignant);
                 $entityManager->flush();
-
+                $this->addFlash('success', 'La modification a été effectué avec succès.');
                 // $this->FlashMessage->add("success","Cours Modifié");
                 return $this->redirectToRoute('show_devoires');
                 // dd($etudiant);

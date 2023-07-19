@@ -37,7 +37,7 @@ class AddCoursController extends AbstractController
             $cours = new Cours();
             $form = $this->createForm(CoursFormType::class, $cours);
             $form->handleRequest($request);
-            $successMessage = '';
+            
             if ($form->isSubmitted() && $form->isValid()){
                 $currentDate = new \DateTime(); 
                 $cours->setDatePublication($currentDate); 
@@ -50,15 +50,13 @@ class AddCoursController extends AbstractController
                 $cours->setIdEnseignant($enseignant);
                 $entityManager->persist($cours);
                 $entityManager->flush();    
-                $successMessage = 'Cours '.$form->get('nomCours')->getData().' ajouté';
-                $variables = ['successMessage' => $successMessage, ];
-                return $this->redirectToRoute('show_cours',$variables);
+                $this->addFlash('success', 'L\'ajout a été effectué avec succès.');
+                // return $this->redirectToRoute('show_cours');
                 
             }
             
             return $this->render('cours/addCours.html.twig', [
                 'CoursForm' => $form->createView(),
-                'successMessage' => $successMessage,
             ]);
         }
         return $this->render('home/index.html.twig', [
@@ -132,14 +130,12 @@ class AddCoursController extends AbstractController
                 $entity->setIdCategorie($categorie);
                 
                 $entityManager->flush();
-                $successMessage = 'Cours '.$form->get('nomCours')->getData().' Modifié';
-                $variables = ['successMessage' => $successMessage, ];
-                return $this->redirectToRoute('show_cours',$variables);
+                $this->addFlash('success', 'La modification a été effectué avec succès.');
+                return $this->redirectToRoute('show_cours');
                 
             }
             return $this->render('cours/addCours.html.twig', [
                 'CoursForm' => $form->createView(),
-                'successMessage' => $successMessage,
             ]);
         } 
         return $this->render('home/index.html.twig', [
@@ -157,7 +153,7 @@ class AddCoursController extends AbstractController
 
         $entityManager->remove($entity);
         $entityManager->flush();
-
+        $this->addFlash('success', 'La supression a été effectué avec succès.');
         return $this->redirectToRoute('show_cours');
         }
         return $this->render('home/index.html.twig', [
