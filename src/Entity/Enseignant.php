@@ -32,10 +32,14 @@ class Enseignant
     #[ORM\OneToMany(mappedBy: 'id_Enseignant', targetEntity: Cours::class, orphanRemoval: true)]
     private Collection $cours;
 
+    #[ORM\OneToMany(mappedBy: 'id_Enseignant', targetEntity: Test::class, orphanRemoval: true)]
+    private Collection $tests;
+
     public function __construct()
     {
         $this->devoirs = new ArrayCollection();
         $this->cours = new ArrayCollection();
+        $this->tests = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -123,6 +127,36 @@ class Enseignant
             // set the owning side to null (unless already changed)
             if ($cour->getIdEnseignant() === $this) {
                 $cour->setIdEnseignant(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Test>
+     */
+    public function getTests(): Collection
+    {
+        return $this->tests;
+    }
+
+    public function addTest(Test $test): static
+    {
+        if (!$this->tests->contains($test)) {
+            $this->tests->add($test);
+            $test->setIdEnseignant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTest(Test $test): static
+    {
+        if ($this->tests->removeElement($test)) {
+            // set the owning side to null (unless already changed)
+            if ($test->getIdEnseignant() === $this) {
+                $test->setIdEnseignant(null);
             }
         }
 

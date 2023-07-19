@@ -64,13 +64,13 @@ class DevoirFormType extends AbstractType
             //     'choices' => $choices,
             //     'label' => 'Enseignant',
             // ])
-            ->add('id_Enseignant', EntityType::class, [
-                'class' => Enseignant::class,
-                'choice_label' => function ($enseignant) {
-                    return $enseignant->getIdPersonne()->getNom() . ' ' . $enseignant->getIdPersonne()->getPrenom();
-                },
-                'choice_value' => 'id', 
-            ])
+            // ->add('id_Enseignant', EntityType::class, [
+            //     'class' => Enseignant::class,
+            //     'choice_label' => function ($enseignant) {
+            //         return $enseignant->getIdPersonne()->getNom() . ' ' . $enseignant->getIdPersonne()->getPrenom();
+            //     },
+            //     'choice_value' => 'id', 
+            // ])
             ->add('Valider',SubmitType::class)
         ;
     }

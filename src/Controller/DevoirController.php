@@ -67,7 +67,8 @@ class DevoirController extends AbstractController
                 $cours = $entityManager->getRepository(Cours::class)->find($form->get('id_Cours')->getData());
                 $devoir->setIdCours($cours);
 
-                $enseignant = $entityManager->getRepository(Enseignant::class)->find($form->get('id_Enseignant')->getData());
+                // $enseignant = $entityManager->getRepository(Enseignant::class)->find($form->get('id_Enseignant')->getData());
+                $enseignant = $entityManager->getRepository(Enseignant::class)->find(reset($roles));
                 $devoir->setIdEnseignant($enseignant);
 
                 $entityManager->persist($devoir);
@@ -95,6 +96,8 @@ class DevoirController extends AbstractController
             ->join(Cours::class, 'co', 'WITH', 'd.id_Cours = co.id')
             ->join(Enseignant::class, 'e', 'WITH', 'd.id_Enseignant = e.id')
             ->join(Personne::class, 'p', 'WITH', 'e.id_personne = p.id')
+            ->where('e.id = :idEnseignant') 
+            ->setParameter('idEnseignant', reset($roles))
             ->getQuery();
     
             $results = $query->getResult(); 
@@ -132,7 +135,7 @@ class DevoirController extends AbstractController
                 $entity->setFichier($form->get('fichier')->getData());
                 $cours = $entityManager->getRepository(Cours::class)->find($form->get('id_Cours')->getData());
                 $entity->setIdCours($cours);
-                $enseignant = $entityManager->getRepository(Enseignant::class)->find($form->get('id_Enseignant')->getData());
+                $enseignant = $entityManager->getRepository(Enseignant::class)->find(reset($roles));
                 $entity->setIdEnseignant($enseignant);
                 $entityManager->flush();
 

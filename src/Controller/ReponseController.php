@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Cours;
+use App\Entity\Enseignant;
 use App\Entity\Question;
 use App\Entity\Reponse;
 use App\Entity\Test;
@@ -26,6 +28,9 @@ class ReponseController extends AbstractController
             ->from(Reponse::class, 'r')
             ->join(Question::class, 'q', 'WITH', 'r.id_Question = q.id')
             ->join(Test::class, 't', 'WITH', 't.id = q.id_Test')
+            ->join(Enseignant::class, 'e', 'WITH', 't.id_Enseignant = e.id')
+            ->where('e.id = :idEnseignant') 
+            ->setParameter('idEnseignant', reset($roles))
             ->getQuery();
             
             $results = $query->getResult(); 

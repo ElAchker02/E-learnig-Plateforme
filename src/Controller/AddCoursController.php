@@ -114,7 +114,7 @@ class AddCoursController extends AbstractController
                 $entity->setPrix($form->get('prix')->getData());
                 $categorie = $entityManager->getRepository(Categorie::class)->find($form->get('id_categorie_id')->getData());
                 $entity->setIdCategorie($categorie);
-                 
+                
                 $entityManager->flush();
                 $successMessage = 'Cours '.$form->get('nomCours')->getData().' Modifié';
                 $variables = ['successMessage' => $successMessage, ];
@@ -129,7 +129,7 @@ class AddCoursController extends AbstractController
         return $this->render('home/index.html.twig', [
             'controller_name' => 'AddCoursController',
         ]);
-           
+        
     }
 
     #[Route('/delete/cours/{id}', name: 'delete_cours')]
@@ -140,7 +140,6 @@ class AddCoursController extends AbstractController
         $entityManager->remove($entity);
         $entityManager->flush();
 
-        // Redirect or display a success message
         return $this->redirectToRoute('show_cours');
     }
 

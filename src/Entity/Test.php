@@ -33,6 +33,13 @@ class Test
     #[ORM\OneToMany(mappedBy: 'id_Test', targetEntity: Question::class, orphanRemoval: true)]
     private Collection $questions;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Enseignant $id_Enseignant = null;
+
+
+
+
     public function __construct()
     {
         $this->noteTests = new ArrayCollection();
@@ -139,4 +146,18 @@ class Test
 
         return $this;
     }
+
+    public function getIdEnseignant(): ?Enseignant
+    {
+        return $this->id_Enseignant;
+    }
+
+    public function setIdEnseignant(?Enseignant $id_Enseignant): static
+    {
+        $this->id_Enseignant = $id_Enseignant;
+
+        return $this;
+    }
+
+    
 }

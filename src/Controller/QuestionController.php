@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Cours;
+use App\Entity\Enseignant;
 use App\Entity\Question;
 use App\Entity\Test;
 use App\Form\QuestionFormType;
@@ -24,6 +26,9 @@ class QuestionController extends AbstractController
             ->select('q.id','q.description','t.nomTest')
             ->from(Question::class, 'q')
             ->join(Test::class, 't', 'WITH', 't.id = q.id_Test')
+            ->join(Enseignant::class, 'e', 'WITH', 't.id_Enseignant = e.id')
+            ->where('e.id = :idEnseignant') 
+            ->setParameter('idEnseignant', reset($roles))
             ->getQuery();
     
             $results = $query->getResult(); 

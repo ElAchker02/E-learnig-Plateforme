@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Chapitre;
 use App\Entity\Cours;
+use App\Entity\Enseignant;
 use App\Entity\Partie;
 use App\Form\PartieFormType;
 use App\Repository\PartieRepository;
@@ -30,6 +31,9 @@ class PartieController extends AbstractController
             ->from(Partie::class, 'p')
             ->join(Chapitre::class, 'ch', 'WITH', 'ch.id = p.id_Chapitre')
             ->join(Cours::class, 'co', 'WITH', 'co.id = p.id_cours')
+            ->join(Enseignant::class, 'e', 'WITH', 'co.id_Enseignant = e.id')
+            ->where('e.id = :idEnseignant') 
+            ->setParameter('idEnseignant', reset($roles))
             ->getQuery();
             $results = $query->getResult(); 
             return $this->render('partie/afficherPartie.html.twig', [

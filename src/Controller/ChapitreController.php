@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Chapitre;
 use App\Entity\Cours;
+use App\Entity\Enseignant;
 use App\Entity\Partie;
 use App\Form\ChapitreFormType;
 use App\Repository\ChapitreRepository;
@@ -28,6 +29,9 @@ class ChapitreController extends AbstractController
             ->select('ch.id','co.id as idCours','ch.nomChap', 'ch.description','ch.video','ch.documents','co.nomCours')
             ->from(Chapitre::class, 'ch')
             ->join(Cours::class, 'co', 'WITH', 'ch.id_Cours = co.id')
+            ->join(Enseignant::class, 'e', 'WITH', 'co.id_Enseignant = e.id')
+            ->where('e.id = :idEnseignant') 
+            ->setParameter('idEnseignant', reset($roles))
             ->getQuery();
     
             $results = $query->getResult(); 

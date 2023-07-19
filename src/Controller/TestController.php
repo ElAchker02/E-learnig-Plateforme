@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Cours;
+use App\Entity\Enseignant;
 use App\Entity\Test;
 use App\Form\TestFormType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,20 +26,13 @@ class TestController extends AbstractController
             $query = $entityManager->createQueryBuilder()
             ->select('t.id','t.nomTest','t.duree')
             ->from(Test::class, 't')
+            ->join(Enseignant::class, 'e', 'WITH', 't.id_Enseignant = e.id')
+            ->where('e.id = :idEnseignant') 
+            ->setParameter('idEnseignant', reset($roles))
             ->getQuery();
 
             $results = $query->getResult();
-            // $data = [];
-            // foreach ($results as $result) {
-            //     $data[] = [
-            //         'id' => $result['id'],
-            //         'nomTest' => $result['nomTest'],
-            //         'duree' => $result['duree'],
-            //     ];
-            // }
-            // return new JsonResponse($data);
             return $this->render('test/afficherTest.html.twig', [
-                // 'data' => json_encode($data),
                 'tests' => $results,
             ]);
         }
@@ -62,6 +56,8 @@ class TestController extends AbstractController
                 $idCours = $form->get('id_Cours')->getData();
                 $cours = $entityManager->getRepository(Cours::class)->find($idCours);
                 $test->setIdCours($cours);
+                $enseignant = $entityManager->getRepository(Enseignant::class)->find(reset($roles));
+                $test->setIdEnseignant($enseignant);
 
                 $entityManager->persist($test);
                 $entityManager->flush();
