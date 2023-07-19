@@ -123,11 +123,6 @@ class ChapitreController extends AbstractController
     public function ModifierCours(SessionInterface $session,EntityManagerInterface $entityManager,Chapitre $chapitre,Request $request,$id){
         $roles = $session->get('roles');
         if(in_array('ENSEIGNANT',$roles) ){
-
-        }
-        return $this->render('home/index.html.twig', [
-            'controller_name' => 'AddCoursController',
-        ]);
             $entity = $entityManager->getRepository(Chapitre::class)->find($id);
             $form = $this->createForm(ChapitreFormType::class, $chapitre);
             
@@ -150,6 +145,11 @@ class ChapitreController extends AbstractController
             return $this->render('chapitre/addChapitre.html.twig', [
                 'ChapitreForm' => $form->createView(),
             ]);
+        }
+        return $this->render('home/index.html.twig', [
+            'controller_name' => 'AddCoursController',
+        ]);
+            
     }
 
     #[Route('/delete/chapitre/{id}', name: 'delete_chapitre')]

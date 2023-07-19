@@ -3,6 +3,7 @@
 {% block title %}Cours{% endblock %}
 
 {% block body %}
+ 
         <div class="pagetitle d-flex justify-content-between align-items-center">
             <h1>List des cours</h1>
            
@@ -19,7 +20,12 @@
               
             </div>
         </div>
- 
+  {% for flashMessage in app.session.flashBag.get('success') %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ flashMessage }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
       <div class="row">
       {% if successMessage is not empty %}
                       <div class="alert alert-success">

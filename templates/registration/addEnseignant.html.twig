@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-
+{% block title %}Enseignants{% endblock %}
 {% block body %}
  {% for flashMessage in app.session.flashBag.get('success') %}
             <div class="alert alert-success alert-dismissible fade show" role="alert">

@@ -200,6 +200,7 @@ class PartieController extends AbstractController
 
                 $entityManager->persist($partie);
                 $entityManager->flush();
+                $this->addFlash('success', 'L\'ajout a été effectué avec succès.');
             }
             
             return $this->render('partie/addPartie.html.twig', [

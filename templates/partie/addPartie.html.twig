@@ -1,12 +1,17 @@
 {% extends 'base.html.twig' %}
 
-
+{% block title %}Partie{% endblock %}
 
 {% block body %}
 
-
+ 
 <div class="example-wrapper">
-
+ {% for flashMessage in app.session.flashBag.get('success') %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ flashMessage }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
     <div class="pagetitle">
         <h1>Ajouter une partie d'un chapitre</h1>
     </div>
