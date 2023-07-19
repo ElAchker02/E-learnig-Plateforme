@@ -23,7 +23,7 @@ class ChapitreController extends AbstractController
     public function AfficherChapitres(ChapitreRepository $chapitreRepository,SessionInterface $session,EntityManagerInterface $entityManager): Response
     {
         $roles = $session->get('roles');
-        if(in_array('ENSEIGNANT',$roles) || in_array('SUPER-ADMIN',$roles )){
+        if(in_array('ENSEIGNANT',$roles)){
 
             $query = $entityManager->createQueryBuilder()
             ->select('ch.id','co.id as idCours','ch.nomChap', 'ch.description','ch.video','ch.documents','co.nomCours')
@@ -32,6 +32,18 @@ class ChapitreController extends AbstractController
             ->join(Enseignant::class, 'e', 'WITH', 'co.id_Enseignant = e.id')
             ->where('e.id = :idEnseignant') 
             ->setParameter('idEnseignant', reset($roles))
+            ->getQuery();
+    
+            $results = $query->getResult(); 
+            return $this->render('chapitre/afficherChapitre.html.twig', [
+                'chapitres' => $results,
+            ]);
+        }
+        elseif( in_array('SUPER-ADMIN',$roles ) || in_array('ADMIN',$roles)){
+            $query = $entityManager->createQueryBuilder()
+            ->select('ch.id','co.id as idCours','ch.nomChap', 'ch.description','ch.video','ch.documents','co.nomCours')
+            ->from(Chapitre::class, 'ch')
+            ->join(Cours::class, 'co', 'WITH', 'ch.id_Cours = co.id')
             ->getQuery();
     
             $results = $query->getResult(); 

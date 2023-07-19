@@ -88,7 +88,7 @@ class DevoirController extends AbstractController
     public function AfficherChapitres(SessionInterface $session,EntityManagerInterface $entityManager): Response
     {
         $roles = $session->get('roles');
-        if(in_array('ENSEIGNANT',$roles) || in_array('SUPER-ADMIN',$roles )){
+        if(in_array('ENSEIGNANT',$roles) ){
 
             $query = $entityManager->createQueryBuilder()
             ->select('d.id','d.nomDevoir','d.description','d.dateDepot','d.dateSoumission','d.images','d.fichier','co.nomCours',"CONCAT(p.nom, ' ', p.prenom) AS fullName")
@@ -98,6 +98,20 @@ class DevoirController extends AbstractController
             ->join(Personne::class, 'p', 'WITH', 'e.id_personne = p.id')
             ->where('e.id = :idEnseignant') 
             ->setParameter('idEnseignant', reset($roles))
+            ->getQuery();
+    
+            $results = $query->getResult(); 
+            return $this->render('devoir/afficherDevoir.html.twig', [
+                'devoires' => $results,
+            ]);
+        }
+        elseif( in_array('SUPER-ADMIN',$roles ) || in_array('ADMIN',$roles)){
+            $query = $entityManager->createQueryBuilder()
+            ->select('d.id','d.nomDevoir','d.description','d.dateDepot','d.dateSoumission','d.images','d.fichier','co.nomCours',"CONCAT(p.nom, ' ', p.prenom) AS fullName")
+            ->from(Devoir::class, 'd')
+            ->join(Cours::class, 'co', 'WITH', 'd.id_Cours = co.id')
+            ->join(Enseignant::class, 'e', 'WITH', 'd.id_Enseignant = e.id')
+            ->join(Personne::class, 'p', 'WITH', 'e.id_personne = p.id')
             ->getQuery();
     
             $results = $query->getResult(); 

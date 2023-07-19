@@ -17,41 +17,32 @@ class AddEtudiantController extends AbstractController
     #[Route('/ajouter/etudiant', name: 'app_add_etudiant')]
     public function index(Request $request, EntityManagerInterface $entityManager,SessionInterface $session): Response
     {
-        $roles = $session->get('roles');
-        if(in_array('SUPER-ADMIN',$roles) || in_array('ADMIN',$roles)){
-            
-            $session = $request->getSession();
-            $session->set('TypeUtilisateur', "etudiant");
-            $personne = new Personne();
-            $etudiant = new Etudiant();
-            $form = $this->createForm(PersonneFormType::class, $personne);
-            $form->handleRequest($request);
+        $session = $request->getSession();
+        $session->set('TypeUtilisateur', "etudiant");
+        $personne = new Personne();
+        $etudiant = new Etudiant();
+        $form = $this->createForm(PersonneFormType::class, $personne);
+        $form->handleRequest($request);
 
-            if ($form->isSubmitted() && $form->isValid()) {
-                $entityManager->persist($personne);
-                $entityManager->flush();
-                $id = $personne->getId();
-                $filiere = $form->get('filiere')->getData();
-                $personne = $entityManager->getRepository(Personne::class)->find($id);
-                $etudiant->setIdPersonne($personne);
-                $etudiant->setFiliere($filiere);
-                $entityManager->persist($etudiant);
-                $entityManager->flush();
-                return $this->redirectToRoute('app_register', ['id' => $id,
-                "filiere"=>$filiere,
-                "Utilisateur"=>"etudiant"]);
-                
-            }
-
-        return $this->render('registration/addEtudiant.html.twig', [
-            'PersonneForm' => $form->createView(),
-        ]);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($personne);
+            $entityManager->flush();
+            $id = $personne->getId();
+            $filiere = $form->get('filiere')->getData();
+            $personne = $entityManager->getRepository(Personne::class)->find($id);
+            $etudiant->setIdPersonne($personne);
+            $etudiant->setFiliere($filiere);
+            $entityManager->persist($etudiant);
+            $entityManager->flush();
+            return $this->redirectToRoute('app_register', ['id' => $id,
+            "filiere"=>$filiere,
+            "Utilisateur"=>"etudiant"]);
             
         }
-        return $this->render('home/index.html.twig', [
-            'controller_name' => 'AddCoursController',
-        ]);
 
+    return $this->render('registration/addEtudiant.html.twig', [
+        'PersonneForm' => $form->createView(),
+    ]);
 
     }
     #[Route('/etudiants', name: 'show_etudiants')]
@@ -117,11 +108,18 @@ class AddEtudiantController extends AbstractController
     }
 
     #[Route('/delete/etudiant/{id}', name: 'delete_etudiant')]
-    public function delete(EntityManagerInterface $entityManager, $id): Response
+    public function delete(SessionInterface $session,EntityManagerInterface $entityManager, $id): Response
     {
-        $entity2 = $entityManager->getRepository(Personne::class)->find($id);
-        $entityManager->remove($entity2);
-        $entityManager->flush();
-        return $this->redirectToRoute('show_etudiants');
+        $roles = $session->get('roles');
+        if(in_array('SUPER-ADMIN',$roles) || in_array('ADMIN',$roles) ){
+            $entity2 = $entityManager->getRepository(Personne::class)->find($id);
+            $entityManager->remove($entity2);
+            $entityManager->flush();
+            return $this->redirectToRoute('show_etudiants');
+        }
+        return $this->render('home/index.html.twig', [
+            'controller_name' => 'AddCoursController',
+        ]);
+
     }
 }

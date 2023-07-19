@@ -21,7 +21,7 @@ class ReponseController extends AbstractController
     public function afficherTests(SessionInterface $session,EntityManagerInterface $entityManager): Response
     {
         $roles = $session->get('roles');
-        if(in_array('ENSEIGNANT',$roles) || in_array('SUPER-ADMIN',$roles )){
+        if(in_array('ENSEIGNANT',$roles) ){
 
             $query = $entityManager->createQueryBuilder()
             ->select('r.id','r.description AS descriptionR ','r.valide','t.nomTest','q.description')
@@ -31,6 +31,19 @@ class ReponseController extends AbstractController
             ->join(Enseignant::class, 'e', 'WITH', 't.id_Enseignant = e.id')
             ->where('e.id = :idEnseignant') 
             ->setParameter('idEnseignant', reset($roles))
+            ->getQuery();
+            
+            $results = $query->getResult(); 
+            return $this->render('reponse/afficherReponse.html.twig', [
+                'reponses' => $results,
+            ]);
+        }
+        elseif( in_array('SUPER-ADMIN',$roles ) || in_array('ADMIN',$roles)){
+            $query = $entityManager->createQueryBuilder()
+            ->select('r.id','r.description AS descriptionR ','r.valide','t.nomTest','q.description')
+            ->from(Reponse::class, 'r')
+            ->join(Question::class, 'q', 'WITH', 'r.id_Question = q.id')
+            ->join(Test::class, 't', 'WITH', 't.id = q.id_Test')
             ->getQuery();
             
             $results = $query->getResult(); 

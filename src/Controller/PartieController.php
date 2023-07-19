@@ -24,7 +24,7 @@ class PartieController extends AbstractController
     public function afficherPartie(SessionInterface $session,PartieRepository $partieRepository,EntityManagerInterface $entityManager): Response
     {
         $roles = $session->get('roles');
-        if(in_array('ENSEIGNANT',$roles) || in_array('SUPER-ADMIN',$roles)){
+        if(in_array('ENSEIGNANT',$roles) ){
 
             $query = $entityManager->createQueryBuilder()
             ->select('p.id','co.id as idCours','p.description', 'p.images','p.info','p.avertissement','co.nomCours','ch.nomChap','co.nomCours')
@@ -34,6 +34,18 @@ class PartieController extends AbstractController
             ->join(Enseignant::class, 'e', 'WITH', 'co.id_Enseignant = e.id')
             ->where('e.id = :idEnseignant') 
             ->setParameter('idEnseignant', reset($roles))
+            ->getQuery();
+            $results = $query->getResult(); 
+            return $this->render('partie/afficherPartie.html.twig', [
+                'parties' => $results,
+            ]);
+        }
+        elseif( in_array('SUPER-ADMIN',$roles ) || in_array('ADMIN',$roles)){
+            $query = $entityManager->createQueryBuilder()
+            ->select('p.id','co.id as idCours','p.description', 'p.images','p.info','p.avertissement','co.nomCours','ch.nomChap','co.nomCours')
+            ->from(Partie::class, 'p')
+            ->join(Chapitre::class, 'ch', 'WITH', 'ch.id = p.id_Chapitre')
+            ->join(Cours::class, 'co', 'WITH', 'co.id = p.id_cours')
             ->getQuery();
             $results = $query->getResult(); 
             return $this->render('partie/afficherPartie.html.twig', [
