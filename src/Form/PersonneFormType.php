@@ -39,9 +39,16 @@ class PersonneFormType extends AbstractType
             ])
             ->add('email',TextType::class)
             ->add('telephone',TextType::class)
+            ->add('categorie', EntityType::class, [
+                'mapped' => false,
+                'class'=> Categorie::class,
+                'choice_value' => 'id',
+                'choice_label' => 'nom_cat',
+            ])
             ->add('filiere', TextType::class, [
                 'mapped' => false,
             ])
+            
             ->add('Valider', SubmitType::class)
             ;
         }

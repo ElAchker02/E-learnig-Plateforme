@@ -27,7 +27,7 @@ class PartieController extends AbstractController
         if(in_array('ENSEIGNANT',$roles) ){
 
             $query = $entityManager->createQueryBuilder()
-            ->select('p.id','co.id as idCours','p.description', 'p.images','p.info','p.avertissement','co.nomCours','ch.nomChap','co.nomCours')
+            ->select('p.id','co.id as idCours','ch.id as idChap','p.description', 'p.images','p.info','p.avertissement','co.nomCours','ch.nomChap','co.nomCours')
             ->from(Partie::class, 'p')
             ->join(Chapitre::class, 'ch', 'WITH', 'ch.id = p.id_Chapitre')
             ->join(Cours::class, 'co', 'WITH', 'co.id = p.id_cours')
@@ -42,7 +42,7 @@ class PartieController extends AbstractController
         }
         elseif( in_array('SUPER-ADMIN',$roles ) || in_array('ADMIN',$roles)){
             $query = $entityManager->createQueryBuilder()
-            ->select('p.id','co.id as idCours','p.description', 'p.images','p.info','p.avertissement','co.nomCours','ch.nomChap','co.nomCours')
+            ->select('p.id','co.id as idCours','ch.id as idChap','p.description', 'p.images','p.info','p.avertissement','co.nomCours','ch.nomChap','co.nomCours')
             ->from(Partie::class, 'p')
             ->join(Chapitre::class, 'ch', 'WITH', 'ch.id = p.id_Chapitre')
             ->join(Cours::class, 'co', 'WITH', 'co.id = p.id_cours')
@@ -106,13 +106,17 @@ class PartieController extends AbstractController
         ]);
     }
 
-    #[Route('/modifier/partie/{id}', name: 'edit_partie')]
-    public function ModifierCours(SessionInterface $session,EntityManagerInterface $entityManager,Partie $partie,Request $request,$id){
+    #[Route('/modifier/partie/{id}/{id2}/{id3}', name: 'edit_partie')]
+    public function ModifierCours(SessionInterface $session,EntityManagerInterface $entityManager,Partie $partie,Request $request,$id,$id2,$id3){
 
         $roles = $session->get('roles');
         if(in_array('ENSEIGNANT',$roles) ){
             $entity = $entityManager->getRepository(Partie::class)->find($id);
+            $entity2 = $entityManager->getRepository(Cours::class)->find($id2);
+            $entity3 = $entityManager->getRepository(Chapitre::class)->find($id3);
             $form = $this->createForm(PartieFormType::class, $partie);
+            $form->get('id_cours')->setData($entity2);
+            $form->get('id_Chapitre')->setData($entity3);
             $form->handleRequest($request);
             if($form->isSubmitted() && $form->isValid()){
                 

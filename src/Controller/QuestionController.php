@@ -23,7 +23,7 @@ class QuestionController extends AbstractController
         if(in_array('ENSEIGNANT',$roles) ){
 
             $query = $entityManager->createQueryBuilder()
-            ->select('q.id','q.description','t.nomTest')
+            ->select('t.id as idT','q.id','q.description','t.nomTest')
             ->from(Question::class, 'q')
             ->join(Test::class, 't', 'WITH', 't.id = q.id_Test')
             ->join(Enseignant::class, 'e', 'WITH', 't.id_Enseignant = e.id')
@@ -38,7 +38,7 @@ class QuestionController extends AbstractController
         }
         elseif( in_array('SUPER-ADMIN',$roles ) || in_array('ADMIN',$roles)){
             $query = $entityManager->createQueryBuilder()
-            ->select('q.id','q.description','t.nomTest')
+            ->select('t.id as idT','q.id','q.description','t.nomTest')
             ->from(Question::class, 'q')
             ->join(Test::class, 't', 'WITH', 't.id = q.id_Test')
             ->getQuery();
@@ -101,14 +101,15 @@ class QuestionController extends AbstractController
        
     }
 
-    #[Route('/modifier/question/{id}', name: 'edit_qst')]
-    public function ModifierTest(SessionInterface $session,EntityManagerInterface $entityManager,Question $question,Request $request,$id){
+    #[Route('/modifier/question/{id}/{id2}', name: 'edit_qst')]
+    public function ModifierTest(SessionInterface $session,EntityManagerInterface $entityManager,Question $question,Request $request,$id,$id2){
 
         $roles = $session->get('roles');
         if(in_array('ENSEIGNANT',$roles) ){
             $entity = $entityManager->getRepository(Question::class)->find($id);
+            $entity2 = $entityManager->getRepository(Test::class)->find($id2);
             $form = $this->createForm(QuestionFormType::class, $question);
-            
+            $form->get('id_Test')->setData($entity2);
             $form->handleRequest($request);
             if($form->isSubmitted() && $form->isValid()){
                 

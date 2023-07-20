@@ -115,9 +115,8 @@ class AddCoursController extends AbstractController
         if(in_array('ENSEIGNANT',$roles)  ){
             $entity = $entityManager->getRepository(Cours::class)->find($id);
             $form = $this->createForm(CoursFormType::class, $cours);
-            
+            $form->get('id_categorie_id')->setData($entity->getIdCategorie());
             $form->handleRequest($request);
-            $successMessage = '';
             if($form->isSubmitted() && $form->isValid()){
                 
                 $cours = $form->getData();

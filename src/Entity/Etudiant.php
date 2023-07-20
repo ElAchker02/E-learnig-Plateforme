@@ -36,6 +36,10 @@ class Etudiant
     #[ORM\OneToMany(mappedBy: 'id_Etudiant', targetEntity: NoteTest::class, orphanRemoval: true)]
     private Collection $noteTests;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Categorie $categorie = null;
+
     public function __construct()
     {
         $this->etudiantCoursPayants = new ArrayCollection();
@@ -189,6 +193,18 @@ class Etudiant
                 $noteTest->setIdEtudiant(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCategorie(): ?Categorie
+    {
+        return $this->categorie;
+    }
+
+    public function setCategorie(?Categorie $categorie): static
+    {
+        $this->categorie = $categorie;
 
         return $this;
     }

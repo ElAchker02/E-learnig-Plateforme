@@ -92,7 +92,7 @@ class DevoirController extends AbstractController
         if(in_array('ENSEIGNANT',$roles) ){
 
             $query = $entityManager->createQueryBuilder()
-            ->select('d.id','d.nomDevoir','d.description','d.dateDepot','d.dateSoumission','d.images','d.fichier','co.nomCours',"CONCAT(p.nom, ' ', p.prenom) AS fullName")
+            ->select('co.id as idCours','d.id','d.nomDevoir','d.description','d.dateDepot','d.dateSoumission','d.images','d.fichier','co.nomCours',"CONCAT(p.nom, ' ', p.prenom) AS fullName")
             ->from(Devoir::class, 'd')
             ->join(Cours::class, 'co', 'WITH', 'd.id_Cours = co.id')
             ->join(Enseignant::class, 'e', 'WITH', 'd.id_Enseignant = e.id')
@@ -108,7 +108,7 @@ class DevoirController extends AbstractController
         }
         elseif( in_array('SUPER-ADMIN',$roles ) || in_array('ADMIN',$roles)){
             $query = $entityManager->createQueryBuilder()
-            ->select('d.id','d.nomDevoir','d.description','d.dateDepot','d.dateSoumission','d.images','d.fichier','co.nomCours',"CONCAT(p.nom, ' ', p.prenom) AS fullName")
+            ->select('co.id as idCours','d.id','d.nomDevoir','d.description','d.dateDepot','d.dateSoumission','d.images','d.fichier','co.nomCours',"CONCAT(p.nom, ' ', p.prenom) AS fullName")
             ->from(Devoir::class, 'd')
             ->join(Cours::class, 'co', 'WITH', 'd.id_Cours = co.id')
             ->join(Enseignant::class, 'e', 'WITH', 'd.id_Enseignant = e.id')
@@ -142,13 +142,15 @@ class DevoirController extends AbstractController
         
     }
 
-    #[Route('/modifier/devoir/{id}', name: 'edit_devoir')]
-    public function ModifierCours(SessionInterface $session,EntityManagerInterface $entityManager,Devoir $devoir,Request $request,$id){
+    #[Route('/modifier/devoir/{id}/{id2}', name: 'edit_devoir')]
+    public function ModifierCours(SessionInterface $session,EntityManagerInterface $entityManager,Devoir $devoir,Request $request,$id,$id2){
 
         $roles = $session->get('roles');
         if(in_array('ENSEIGNANT',$roles) ){
             $entity = $entityManager->getRepository(Devoir::class)->find($id);
+            $entity2 = $entityManager->getRepository(Cours::class)->find($id2);
             $form = $this->createForm(DevoirFormType::class, $devoir);
+            $form->get('id_Cours')->setData($entity2);
             $form->handleRequest($request);
             if($form->isSubmitted() && $form->isValid()){
                 

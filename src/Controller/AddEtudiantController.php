@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Categorie;
 use App\Entity\Personne;
 use App\Entity\Etudiant;
 use App\Form\PersonneFormType;
@@ -32,6 +33,9 @@ class AddEtudiantController extends AbstractController
             $personne = $entityManager->getRepository(Personne::class)->find($id);
             $etudiant->setIdPersonne($personne);
             $etudiant->setFiliere($filiere);
+            $idCat = $form->get('categorie')->getData();
+            $categorie = $entityManager->getRepository(Categorie::class)->find($idCat);
+            $etudiant->setCategorie($categorie);
             $entityManager->persist($etudiant);
             $entityManager->flush();
             $this->addFlash('success', 'L\'ajout a été effectué avec succès.');
@@ -80,6 +84,7 @@ class AddEtudiantController extends AbstractController
             $session = $request->getSession();
             $session->set('TypeUtilisateur', "etudiant");
             $form->get('filiere')->setData($entity->getFiliere());
+            $form->get('categorie')->setData($entity->getCategorie());
             
             $form->handleRequest($request);
             if($form->isSubmitted() && $form->isValid()){
@@ -92,6 +97,8 @@ class AddEtudiantController extends AbstractController
                 $entity2->setEmail($form->get('email')->getData());
                 $entity2->setTelephone($form->get('telephone')->getData());
                 $entity->setFiliere($form->get('filiere')->getData());
+                $categorie = $entityManager->getRepository(Categorie::class)->find($form->get('categorie')->getData());
+                $entity->setCategorie($categorie);
                 $entityManager->flush();
 
                 $this->addFlash('success', 'La modification a été effectué avec succès.');

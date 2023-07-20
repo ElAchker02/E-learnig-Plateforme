@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Categorie;
 use App\Entity\Chapitre;
 use App\Entity\Cours;
 use App\Entity\Enseignant;
@@ -119,13 +120,14 @@ class ChapitreController extends AbstractController
             'controller_name' => 'AddCoursController',
         ]);
     }
-    #[Route('/modifier/chapitre/{id}', name: 'edit_chapitre')]
-    public function ModifierCours(SessionInterface $session,EntityManagerInterface $entityManager,Chapitre $chapitre,Request $request,$id){
+    #[Route('/modifier/chapitre/{id}/{id2}', name: 'edit_chapitre')]
+    public function ModifierCours(SessionInterface $session,EntityManagerInterface $entityManager,Chapitre $chapitre,Request $request,$id,$id2){
         $roles = $session->get('roles');
         if(in_array('ENSEIGNANT',$roles) ){
             $entity = $entityManager->getRepository(Chapitre::class)->find($id);
+            $entity2 = $entityManager->getRepository(Cours::class)->find($id2);
             $form = $this->createForm(ChapitreFormType::class, $chapitre);
-            
+            $form->get('id_Cours')->setData($entity2);
             $form->handleRequest($request);
             if($form->isSubmitted() && $form->isValid()){
                 

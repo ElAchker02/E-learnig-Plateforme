@@ -24,7 +24,7 @@ class ReponseController extends AbstractController
         if(in_array('ENSEIGNANT',$roles) ){
 
             $query = $entityManager->createQueryBuilder()
-            ->select('r.id','r.description AS descriptionR ','r.valide','t.nomTest','q.description')
+            ->select('q.id as idQ','r.id','r.description AS descriptionR ','r.valide','t.nomTest','q.description')
             ->from(Reponse::class, 'r')
             ->join(Question::class, 'q', 'WITH', 'r.id_Question = q.id')
             ->join(Test::class, 't', 'WITH', 't.id = q.id_Test')
@@ -40,7 +40,7 @@ class ReponseController extends AbstractController
         }
         elseif( in_array('SUPER-ADMIN',$roles ) || in_array('ADMIN',$roles)){
             $query = $entityManager->createQueryBuilder()
-            ->select('r.id','r.description AS descriptionR ','r.valide','t.nomTest','q.description')
+            ->select('q.id as idQ','r.id','r.description AS descriptionR ','r.valide','t.nomTest','q.description')
             ->from(Reponse::class, 'r')
             ->join(Question::class, 'q', 'WITH', 'r.id_Question = q.id')
             ->join(Test::class, 't', 'WITH', 't.id = q.id_Test')
@@ -130,13 +130,14 @@ class ReponseController extends AbstractController
         
     }
 
-    #[Route('/modifier/reponse/{id}', name: 'edit_rep')]
-    public function ModifierTest(SessionInterface $session,EntityManagerInterface $entityManager,Reponse $reponse,Request $request,$id){
+    #[Route('/modifier/reponse/{id}/{id2}', name: 'edit_rep')]
+    public function ModifierTest(SessionInterface $session,EntityManagerInterface $entityManager,Reponse $reponse,Request $request,$id,$id2){
         $roles = $session->get('roles');
         if(in_array('ENSEIGNANT',$roles) ){
             $entity = $entityManager->getRepository(Reponse::class)->find($id);
+            $entity2 = $entityManager->getRepository(Question::class)->find($id2);
             $form = $this->createForm(ReponseFormType::class, $reponse);
-            
+            $form->get('id_Question')->setData($entity2);
             $form->handleRequest($request);
             if($form->isSubmitted() && $form->isValid()){
                 
