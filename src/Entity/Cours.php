@@ -62,6 +62,9 @@ class Cours
     #[ORM\OneToMany(mappedBy: 'id_cours', targetEntity: Partie::class, orphanRemoval: true)]
     private Collection $parties;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $image = null;
+
 
 
 
@@ -354,6 +357,18 @@ class Cours
                 $party->setIdCours(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): static
+    {
+        $this->image = $image;
 
         return $this;
     }

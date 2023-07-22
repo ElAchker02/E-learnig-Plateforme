@@ -7,6 +7,7 @@ parameters:
     image_directory : '%kernel.project_dir%/public/images/profile'
     image_directory2 : '%kernel.project_dir%/public/images/imageDevoires'
     image_directory3 : '%kernel.project_dir%/public/images/imagePartie'
+    image_directory4 : '%kernel.project_dir%/public/images/cours'
     documents_directory : '%kernel.project_dir%/public/pdf'
     video_directory : '%kernel.project_dir%/public/video'
     devoir_directory : '%kernel.project_dir%/public/devoires'

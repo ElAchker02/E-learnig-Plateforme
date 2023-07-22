@@ -41,7 +41,9 @@ class AddEtudiantController extends AbstractController
             $this->addFlash('success', 'L\'ajout a été effectué avec succès.');
             return $this->redirectToRoute('app_register', ['id' => $id,
             "filiere"=>$filiere,
-            "Utilisateur"=>"etudiant"]);
+            "Utilisateur"=>"etudiant",
+            "idEtu" => $etudiant->getId(),
+        ]);
             
         }
 
@@ -73,6 +75,8 @@ class AddEtudiantController extends AbstractController
         ]);
 
     }
+
+
 
     #[Route('/modifier/etudiant/{id}/{id2}', name: 'edit_etudiant')]
     public function ModifierCours(SessionInterface $session,EntityManagerInterface $entityManager,Personne $personne,Request $request,$id,$id2){
@@ -131,4 +135,6 @@ class AddEtudiantController extends AbstractController
         ]);
 
     }
+
+
 }

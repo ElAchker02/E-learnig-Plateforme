@@ -33,6 +33,7 @@ class RegistrationController extends AbstractController
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
         $idE = $request->query->get('idE');
+        $idEtu = $request->query->get('idEtu');
         if ($form->isSubmitted() && $form->isValid()) {
             $user->setPassword(
                 $userPasswordHasher->hashPassword(
@@ -61,7 +62,7 @@ class RegistrationController extends AbstractController
             
                     $utilisateur = $session->get('TypeUtilisateur');
                     if($utilisateur == "etudiant"){
-                        $user->setRoles(array("ETUDIANT"));    
+                        $user->setRoles(array($idEtu,"ETUDIANT"));    
                     }
                     elseif($utilisateur == "enseignant"){
                         

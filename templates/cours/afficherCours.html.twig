@@ -27,12 +27,7 @@
             </div>
         {% endfor %}
       <div class="row">
-      {% if successMessage is not empty %}
-                      <div class="alert alert-success">
-                          {{ successMessage }}
-                      </div>
-                        
-            {% endif %}
+    
       {% for cour in cours %}
           
             <div class="col-sm">
@@ -72,7 +67,7 @@
                   <p>Le prix de ce cours est <b> {{cour.prix}}DH</b></p>
                   {% endif %}
                   <hr>
-                  <p>{{cour.fullName}}</p>
+                  <p>{{cour.fullName}}</p> 
                                   <hr>
                   <p>{{cour.nomCat}}</p>
                 </div>
