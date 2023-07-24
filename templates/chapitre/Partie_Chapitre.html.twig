@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+
+
+{% block body %}
+{% for chapitre in chapitres %}
+        <div >
+                <h1 class="d-flex justify-content-center ">{{chapitre.nomCours}}</h1> 
+                <h2 class="d-flex justify-content-center ">Chapitre : {{chapitre.nomChap}}</h2>
+        </div>
+
+        <div class="card">
+        <div class="card-body pt-4">
+            
+            <p>{{chapitre.description}}</p>
+            {% if chapitre.video != null  %}
+                    <video width="640" height="360" controls>
+                        <source src="{{ asset('video/' ~ chapitre.video) }}" type="video/mp4">
+                    </video>
+            {% endif %}
+        </div>
+        </div>
+        
+
+        <hr>
+        {# <p>{{chapitre.documents}}</p> #}
+        {% for partie in parties %}
+        <div class="card">
+        <div class="card-body pt-4">
+            <p>{{partie.description}}</p>
+            {% if  partie.images != null%}
+            <div class="row">
+                <div class="col">
+                <img src="{{ asset('images/imagePartie/' ~ partie.images) }}" width="640" height="360" class="img-fluid my-2 rounded" alt="{{partie.images}}">
+                </div>
+            </div>
+            {% endif %}
+            
+           
+        </div>
+        </div>
+         {% if partie.info != null %}
+                <div class="alert alert-primary d-flex align-items-center" role="alert">
+                <i class="fa-solid fa-circle-info "></i>
+                <div style="margin-left: 10px;">{{partie.info}}</div>
+                   
+                </div>
+            {% endif %}
+            {% if partie.avertissement != null %}
+           
+                 <div class="alert alert-warning d-flex align-items-center" role="alert">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <div style="margin-left: 10px;">{{partie.avertissement}}</div>
+                   
+                </div>
+            {% endif %}
+            
+            <hr>
+        {% endfor %}
+             <div class="d-flex  justify-content-center align-items-center mt-4"><a href="{{path('unfollow_cours',{id1 : chapitre.idCours ,id2: idEtu})}}" class="btn btn-danger">Abandonner</a></div>
+{% endfor %}
+
+{% endblock %}

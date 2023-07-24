@@ -25,31 +25,6 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         {% endfor %}
-        {# <div class ="card-body">
-        <table class="table table-hover">
-                <thead>
-                  <tr>
-                    <th scope="col">Nom du chapitre</th>
-                    <th scope="col">Description</th>
-                    <th scope="col">Video</th>
-                    <th scope="col">Document</th>
-                    <th scope="col">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                {% for chap in chapitres %}
-                  <tr>
-                    <th scope="row">{{ chap.nomChap}}</th>
-                    <td>{{chap.description}}</td>
-                    <td>{{ chap.video}}</td>
-                    <td>{{chap.documents}}</td>
-                    <td> <a href="" class="btn btn-primary "><i class="fa fa-file-edit"></i></a>
-                      <a href="" class="btn btn-danger"><i class="fa fa-trash"></i></a></td>
-                  </tr>
-                {% endfor %}
-                </tbody>
-        </table>
-        </div> #}
           <div class="row">
       {% for chap in chapitres %}
           

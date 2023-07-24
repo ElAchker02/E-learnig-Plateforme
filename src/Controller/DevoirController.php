@@ -39,7 +39,7 @@ class DevoirController extends AbstractController
                     $newFilename = $safeFilename.'-'.uniqid().'.'.$image->guessExtension();
                     try {
                         $image->move(
-                            $this->getParameter('image_directory3'),
+                            $this->getParameter('image_directory2'),
                             $newFilename
                         );
                     } catch (FileException $e) {

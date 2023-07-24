@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+
+
+{% block body %}
+
+    <table class="table table-sm ">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Chapitre</th>
+
+    </tr>
+  </thead>
+  <tbody>
+  {% for chapitre in chapitres %}
+        <tr>
+      <th scope="row">#</th>
+      <td> <a href="{{ path('info_chapitre',{id1: chapitre.id , id2 : chapitre.idCours})}}">{{ chapitre.nomChap }}</a> </td>
+
+    </tr>
+  {% endfor %}
+
+
+  </tbody>
+</table>
+
+{% endblock %}

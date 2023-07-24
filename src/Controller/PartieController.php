@@ -83,7 +83,7 @@ class PartieController extends AbstractController
                     $newFilename = $safeFilename.'-'.uniqid().'.'.$image->guessExtension();
                     try {
                         $image->move(
-                            $this->getParameter('image_directory2'),
+                            $this->getParameter('image_directory3'),
                             $newFilename
                         );
                     } catch (FileException $e) {

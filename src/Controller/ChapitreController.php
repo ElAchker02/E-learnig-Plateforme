@@ -54,7 +54,7 @@ class ChapitreController extends AbstractController
         }
         return $this->render('home/index.html.twig', [
             'controller_name' => 'AddCoursController',
-        ]);;
+        ]);
     }
 
     #[Route('/ajouter/chapitre', name: 'add_chapitre')]
@@ -228,6 +228,67 @@ class ChapitreController extends AbstractController
             
             return $this->render('chapitre/addChapitre.html.twig', [
                 'ChapitreForm' => $form->createView(),
+            ]);
+        }
+        return $this->render('home/index.html.twig', [
+            'controller_name' => 'AddCoursController',
+        ]);
+    }
+    #[Route('/list/chapitres', name: 'list_chapitre')]
+    public function listChapitres(Request $request,ChapitreRepository $chapitreRepository,SessionInterface $session,EntityManagerInterface $entityManager): Response
+    {
+        $roles = $session->get('roles');
+        if(in_array('ETUDIANT',$roles)){
+            $idCours = $request->query->get('idCours');
+
+            $query = $entityManager->createQueryBuilder()
+            ->select('ch.id','co.id as idCours','ch.nomChap')
+            ->from(Chapitre::class, 'ch')
+            ->join(Cours::class, 'co', 'WITH', 'ch.id_Cours = co.id')
+            ->where('co.id = :idCours') 
+            ->setParameter('idCours', $idCours)
+            ->getQuery();
+    
+            $results = $query->getResult(); 
+            return $this->render('chapitre/listeChapitre.html.twig', [
+                'chapitres' => $results,
+            ]);
+        }
+        return $this->render('home/index.html.twig', [
+            'controller_name' => 'AddCoursController',
+        ]);;
+    }
+
+    #[Route('/info/chapitre/{id1}/{id2}', name: 'info_chapitre')]
+    public function InfoChapitres($id1,$id2,ChapitreRepository $chapitreRepository,SessionInterface $session,EntityManagerInterface $entityManager): Response
+    {
+        $roles = $session->get('roles');
+        if(in_array('ETUDIANT',$roles)){
+            
+            $query = $entityManager->createQueryBuilder()
+            ->select('ch.id','co.id as idCours','p.description','p.images','p.info','p.avertissement')
+            ->from(Partie::class, 'p')
+            ->join(Chapitre::class, 'ch', 'WITH', 'p.id_Chapitre = ch.id')
+            ->join(Cours::class, 'co', 'WITH', 'ch.id_Cours = co.id')
+            ->where('ch.id= :idChapitre') 
+            ->andWhere('co.id = :idCours')
+            ->setParameter('idChapitre', $id1)
+            ->setParameter('idCours', $id2)
+            ->getQuery();
+            $results = $query->getResult(); 
+
+            $query2 = $entityManager->createQueryBuilder()
+            ->select('ch.id','co.id as idCours','ch.nomChap', 'co.nomCours','ch.description','ch.video','ch.documents')
+            ->from(Chapitre::class, 'ch')
+            ->join(Cours::class, 'co', 'WITH', 'ch.id_Cours = co.id')
+            ->where('ch.id= :idChapitre') 
+            ->setParameter('idChapitre', $id1)
+            ->getQuery();
+            $results2 = $query2->getResult(); 
+            return $this->render('chapitre/Partie_Chapitre.html.twig', [
+                'parties' => $results,
+                'chapitres' => $results2,
+                'idEtu' => reset($roles)
             ]);
         }
         return $this->render('home/index.html.twig', [

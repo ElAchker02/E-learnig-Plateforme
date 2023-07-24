@@ -227,6 +227,17 @@ class AddCoursController extends AbstractController
         if(in_array('ETUDIANT',$roles)){
             
             $query = $entityManager->createQueryBuilder()
+            ->select('COUNT(p.id)')
+            ->from(Progression::class, 'p')
+            ->where('p.id_Cours = :idCours') 
+            ->andWhere('p.id_Etudiant = :idEtudiant')
+            ->setParameter('idCours', $id)
+            ->setParameter('idEtudiant', reset($roles))
+            ->getQuery();
+
+        $nombreDeProgressions = $query->getSingleScalarResult();
+        if($nombreDeProgressions == 0){
+            $query = $entityManager->createQueryBuilder()
             ->select('c.id','c.nomCours', 'c.introduction','c.datePublication','c.nbChapitres','c.estPayant','c.prix', "CONCAT(p.nom, ' ', p.prenom) AS fullName","ca.nomCat")
             ->from(Cours::class, 'c')
             ->join(Enseignant::class, 'e', 'WITH', 'c.id_Enseignant = e.id')
@@ -241,6 +252,12 @@ class AddCoursController extends AbstractController
                 'cours' => $results,
                 'idEtu'=> reset($roles),
             ]);
+        }
+        else{
+            return $this->redirectToRoute('list_chapitre',['idCours'=>$id]);
+        }
+
+          
         }
         
         return $this->render('home/index.html.twig', [
@@ -280,10 +297,7 @@ class AddCoursController extends AbstractController
                 
         }
         
-        return $this->render('home/index.html.twig', [
-            'controller_name' => 'AddCoursController',
-            
-        ]);
+        return $this->redirectToRoute('list_chapitre',['idCours'=>$id1]);
     }
     #[Route('/unfollow/cours/{id1}/{id2}', name: 'unfollow_cours')]
     public function UnfollowCours(EntityManagerInterface $entityManager ,SessionInterface $session,Request $request,$id1,$id2): Response
