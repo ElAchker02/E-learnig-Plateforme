@@ -69,7 +69,7 @@
                             <a href="{{path('edit_profile_etudiant',{id2 : etudiant.id_etudiant , id: etudiant.id})}}" class="btn btn-primary">Modifier</a>
                           </div>
                            <div class="text-center">
-                            <a href="{{path('edit_user',{id : admin.userId })}}" class="btn btn-primary">Modifier</a>
+                            <a href="{{path('edit_user',{id : etudiant.userId })}}" class="btn btn-primary">Modifier</a>
                           </div>
                       {% endfor %}  
                   {% elseif 'ENSEIGNANT' in app.session.get('roles') %}
@@ -100,7 +100,7 @@
                           </div>
                           <div class="d-flex justify-content-between">
                             <a href="{{path('edit_profile_enseignant',{id2 : enseignant.enseignant_id , id: enseignant.id})}}" class="btn btn-primary">Modifier</a>
-                            <a href="{{path('edit_user',{id : admin.userId })}}" class="btn btn-primary">Modifier</a>
+                            <a href="{{path('edit_user',{id : enseignant.userId })}}" class="btn btn-primary">Modifier</a>
                           </div>
                           
                       {% endfor %}
