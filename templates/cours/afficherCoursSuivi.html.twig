@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Cours{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-between flex-wrap">
+    {% for cour in cours %}
+
+                    <div class="card" style="width: 18rem;">
+                        <img src="{{ asset('images/cours/' ~ cour.image) }}" class="card-img-top" alt="{{cour.image}}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{cour.nomCours}}</h5>
+                            <p class="card-text">{% if cour.estPayant == 1 %}
+                                        Le cours est payant
+                                        {% else %}
+                                        Le cours est gratuit
+                                {% endif %}</p>
+                            <a href="{{ path('detail_cours', {id:cour.id})}}" class="btn btn-primary">Suivre</a>
+                        </div>
+                    </div>
+    {% endfor %}
+</div>
+{% endblock %}

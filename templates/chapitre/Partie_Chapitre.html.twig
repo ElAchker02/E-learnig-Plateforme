@@ -58,6 +58,7 @@
             <hr>
         {% endfor %}
              <div class="d-flex  justify-content-center align-items-center mt-4"><a href="{{path('unfollow_cours',{id1 : chapitre.idCours ,id2: idEtu})}}" class="btn btn-danger">Abandonner</a></div>
+             <div class="d-flex  justify-content-center align-items-center mt-4"><a href="{{path('list_chapitre',{idCours : chapitre.idCours})}}" class="btn btn-primary">Liste des chapitres</a></div>
 {% endfor %}
 
 {% endblock %}

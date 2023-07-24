@@ -299,6 +299,7 @@ class AddCoursController extends AbstractController
         
         return $this->redirectToRoute('list_chapitre',['idCours'=>$id1]);
     }
+
     #[Route('/unfollow/cours/{id1}/{id2}', name: 'unfollow_cours')]
     public function UnfollowCours(EntityManagerInterface $entityManager ,SessionInterface $session,Request $request,$id1,$id2): Response
     {
@@ -314,5 +315,29 @@ class AddCoursController extends AbstractController
         }
         
         return $this->redirectToRoute('show_cours2');
+    }
+
+    #[Route('/Mes/Cours', name: 'mes_Cours')]
+    public function AfficherCoursSuivi(EntityManagerInterface $entityManager ,SessionInterface $session,Request $request): Response
+    {
+        $roles = $session->get('roles');
+        if(in_array('ETUDIANT',$roles)){
+            
+            $query = $entityManager->createQueryBuilder()
+            ->select('c.id','c.nomCours', 'c.introduction','c.datePublication','c.nbChapitres','c.estPayant','c.prix',"c.image")
+            ->from(Cours::class, 'c')
+            ->join(Progression::class, 'p', 'WITH', 'p.id_Cours = c.id ')
+            ->Where('p.id_Etudiant = :idEtudiant')
+            ->setParameter('idEtudiant', reset($roles))
+            ->getQuery();          
+            $results = $query->getResult();
+            return $this->render('cours/afficherCoursSuivi.html.twig', [
+                'cours' => $results,
+            ]);
+        }
+        
+        return $this->render('home/index.html.twig', [
+            'controller_name' => 'AddCoursController',
+        ]);
     }
 }

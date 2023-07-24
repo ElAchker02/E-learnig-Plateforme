@@ -52,6 +52,9 @@ class AddEtudiantController extends AbstractController
     ]);
 
     }
+
+  
+
     #[Route('/etudiants', name: 'show_etudiants')]
     public function AfficherEtudiant(SessionInterface $session,EntityManagerInterface $entityManager): Response
     {
@@ -82,7 +85,7 @@ class AddEtudiantController extends AbstractController
     public function ModifierCours(SessionInterface $session,EntityManagerInterface $entityManager,Personne $personne,Request $request,$id,$id2){
 
         $roles = $session->get('roles');
-        if(in_array('SUPER-ADMIN',$roles) || in_array('ADMIN',$roles) ){
+        if(in_array('SUPER-ADMIN',$roles) || in_array('ADMIN',$roles) || in_array('ETUDIANT',$roles) ){
             $entity = $entityManager->getRepository(Etudiant::class)->find($id2);
             $form = $this->createForm(PersonneFormType::class, $personne);
             $session = $request->getSession();

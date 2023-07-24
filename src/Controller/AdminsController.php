@@ -81,66 +81,66 @@ class AdminsController extends AbstractController
     }
 
     
-    #[Route('/modifier/admin/{id}}', name: 'edit_admin')]
-    public function ModifierCours(SessionInterface $session,EntityManagerInterface $entityManager,SluggerInterface $slugger,User $user,Request $request,$id,UserPasswordHasherInterface $userPasswordHasher){
-        $roles = $session->get('roles');
-        if(in_array('SUPER-ADMIN',$roles)  ){
-            $entity = $entityManager->getRepository(User::class)->find($id);
-            $form = $this->createForm(RegistrationFormType::class, $user);
-            $session = $request->getSession();
-            $session->set('TypeUtilisateur', "enseignant");
-            $form->get('NomUtilisateur')->setData($entity->getNomUtilisateur());
-            $form->get('email')->setData($entity->getEmail());
-            $form->handleRequest($request);
-            if($form->isSubmitted() && $form->isValid()){
-                
-                $user = $form->getData(); 
-                $entity->setEmail($form->get('email')->getData());
-                if($form->get('plainPassword')->getData() != null){
-                    $entity->setPassword(
-                        $userPasswordHasher->hashPassword(
-                            $user,
-                            $form->get('plainPassword')->getData()
-                        )
-                    );
-                }   
-                if($form->get('image')->getData() != null){
-                    $image = $form->get('image')->getData();
-                    if ($image) {
-                        $originalFilename = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
-                        $safeFilename = $slugger->slug($originalFilename);
-                        $newFilename = $safeFilename.'-'.uniqid().'.'.$image->guessExtension();
-                        try {
-                            $image->move(
-                                $this->getParameter('image_directory'),
-                                $newFilename);
-                        } catch (FileException $e) {
+        #[Route('/modifier/admin/{id}}', name: 'edit_admin')]
+        public function ModifierCours(SessionInterface $session,EntityManagerInterface $entityManager,SluggerInterface $slugger,User $user,Request $request,$id,UserPasswordHasherInterface $userPasswordHasher){
+            $roles = $session->get('roles');
+            if(in_array('SUPER-ADMIN',$roles)  ){
+                $entity = $entityManager->getRepository(User::class)->find($id);
+                $form = $this->createForm(RegistrationFormType::class, $user);
+                $session = $request->getSession();
+                $session->set('TypeUtilisateur', "enseignant");
+                $form->get('NomUtilisateur')->setData($entity->getNomUtilisateur());
+                $form->get('email')->setData($entity->getEmail());
+                $form->handleRequest($request);
+                if($form->isSubmitted() && $form->isValid()){
+                    
+                    $user = $form->getData(); 
+                    $entity->setEmail($form->get('email')->getData());
+                    if($form->get('plainPassword')->getData() != null){
+                        $entity->setPassword(
+                            $userPasswordHasher->hashPassword(
+                                $user,
+                                $form->get('plainPassword')->getData()
+                            )
+                        );
+                    }   
+                    if($form->get('image')->getData() != null){
+                        $image = $form->get('image')->getData();
+                        if ($image) {
+                            $originalFilename = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+                            $safeFilename = $slugger->slug($originalFilename);
+                            $newFilename = $safeFilename.'-'.uniqid().'.'.$image->guessExtension();
+                            try {
+                                $image->move(
+                                    $this->getParameter('image_directory'),
+                                    $newFilename);
+                            } catch (FileException $e) {
 
+                            }
+                            $entity->setImage($newFilename);
                         }
-                        $entity->setImage($newFilename);
-                    }
-                }  
-                $entity->setNomUtilisateur($form->get('NomUtilisateur')->getData());
+                    }  
+                    $entity->setNomUtilisateur($form->get('NomUtilisateur')->getData());
 
-                $entityManager->flush();
+                    $entityManager->flush();
 
-                $this->addFlash('success', 'La modification a été effectué avec succès.');
-                return $this->redirectToRoute('show_admins');
-                // dd($etudiant);
+                    $this->addFlash('success', 'La modification a été effectué avec succès.');
+                    return $this->redirectToRoute('show_admins');
+                    // dd($etudiant);
+                }
+                return $this->render('registration/register.html.twig', [
+                    'registrationForm' => $form->createView(),
+                ]);
             }
-            return $this->render('registration/register.html.twig', [
-                'registrationForm' => $form->createView(),
+            return $this->render('home/index.html.twig', [
+                'controller_name' => 'AddCoursController',
             ]);
+                
         }
-        return $this->render('home/index.html.twig', [
-            'controller_name' => 'AddCoursController',
-        ]);
-            
-    }
-    #[Route('/delete/admin/{id}', name: 'delete_admin')]
-    public function delete(SessionInterface $session,EntityManagerInterface $entityManager, $id): Response
-    {
-        $roles = $session->get('roles');
+        #[Route('/delete/admin/{id}', name: 'delete_admin')]
+        public function delete(SessionInterface $session,EntityManagerInterface $entityManager, $id): Response
+        {
+            $roles = $session->get('roles');
         if(in_array('SUPER-ADMIN',$roles)  ){
             $entity2 = $entityManager->getRepository(Personne::class)->find($id);
         $entityManager->remove($entity2);
