@@ -46,35 +46,13 @@
                           <div class="form-group">
                             <button type="submit" class="form-control btn btn-primary rounded submit px-3"> Sign in</button>
                         </div>
-                        <!-- <label for="inputEmail">Email</label>
-                        <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus> -->
-                        <!-- <label for="inputPassword">Password</label>
-                        <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required> -->
-                        <div class="form-group d-md-flex">
-                            <div class="w-50">
-                                <label class="checkbox-wrap checkbox-primary">Remember Me
-                                              <input type="checkbox" checked="" name="_remember_me">
-                                              <span class="checkmark"></span>
-                                            </label>
-                                        </div>
-                                        <div class="w-50 text-md-right">
-                                            <a href="#">Forgot Password</a>
-                                        </div>
-                        </div>
+                   
+                       
                         <input type="hidden" name="_csrf_token"
                             value="{{ csrf_token('authenticate') }}"
                         >
                     
-                        {#
-                            Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
-                            See https://symfony.com/doc/current/security/remember_me.html
                     
-                            <!-- <div class="checkbox mb-3">
-                                <label>
-                                    <input type="checkbox" name="_remember_me"> Remember me
-                                </label>
-                            </div> -->
-                        #}
                     
                             <div class="d-flex justify-content-center">
                                             <a href="{{ path('app_add_etudiant') }}">Inscrire</a>

@@ -11,14 +11,14 @@
 <link href="{{asset('images/favicon.png')}}" rel="icon">
   <link href="{{asset('images/apple-touch-icon.png')}}" rel="apple-touch-icon">
 
-  <!-- Google Fonts -->
+  
   <link href="https://fonts.gstatic.com" rel="preconnect">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 {% block stylesheets %}
 
   
-  <!-- Vendor CSS Files -->
+  
   <link href="{{asset('vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
   <link href="{{asset('vendor/bootstrap-icons/bootstrap-icons.css')}}" rel="stylesheet">
   <link href="{{asset('vendor/boxicons/css/boxicons.min.css')}}" rel="stylesheet">
@@ -27,7 +27,7 @@
   <link href="{{asset('vendor/remixicon/remixicon.css')}}" rel="stylesheet">
   <link href="{{asset('vendor/simple-datatables/style.css')}}" rel="stylesheet">
 
-  <!-- Template Main CSS File -->
+  
   <link href="{{asset('css/style.css')}}" rel="stylesheet">
   
 {% endblock %}
@@ -37,7 +37,7 @@
 
 <body>
 
-  <!-- ======= Header ======= -->
+
   <header id="header" class="header fixed-top d-flex align-items-center">
 
     <div class="d-flex align-items-center justify-content-between">
@@ -47,7 +47,7 @@
         <span class="d-none d-lg-block">E-learning</span>
       </a>
       <i class="bi bi-list toggle-sidebar-btn"></i>
-    </div><!-- End Logo -->
+    </div>
 
 
     <nav class="header-nav ms-auto">
@@ -65,7 +65,7 @@
             <img src="{{asset('images/profile/'~ app.user.image)}}" alt="Profile" class="rounded-circle">
             
             <span class="d-none d-md-block dropdown-toggle ps-2">{{ app.user.nomUtilisateur }}</span>
-          </a><!-- End Profile Iamge Icon -->
+          </a>
 
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
             <li class="dropdown-header">
@@ -106,15 +106,15 @@
               </a>
             </li>
 
-          </ul><!-- End Profile Dropdown Items -->
-        </li><!-- End Profile Nav -->
+          </ul>
+        </li>
 
       </ul>
-    </nav><!-- End Icons Navigation -->
+    </nav>
 
-  </header><!-- End Header -->
+  </header>
 
-  <!-- ======= Sidebar ======= -->
+  
   <aside id="sidebar" class="sidebar">
 
     <ul class="sidebar-nav" id="sidebar-nav">
@@ -289,6 +289,8 @@
             <a href="{{path('show_reponse')}}">
               <i class="bi bi-circle"></i><span>Reponse</span>
             </a>
+        
+        </ul>
           </li>
             <li class="nav-item">
             <a class="nav-link collapsed" href="{{ path('profile') }}">
@@ -296,7 +298,6 @@
             <span>Profile</span>
             </a>
         </li>
-        </ul>
       </li>
     {% endif %}
 
@@ -305,21 +306,11 @@
 
     </ul>
 
-  </aside><!-- End Sidebar-->
+  </aside>
 
   <main id="main" class="main">
 
-    {# <div class="pagetitle">
-      <h1>Blank Page</h1>
-      <nav>
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-          <li class="breadcrumb-item">Pages</li>
-          <li class="breadcrumb-item active">Blank</li>
-        </ol>
-      </nav>
-    </div><!-- End Page Title --> #}
-
+  
     <section class="section">
     
     {% block body %}
@@ -328,22 +319,14 @@
 
     </section>
 
-  </main><!-- End #main -->
+  </main>
 
-  <!-- ======= Footer ======= -->
-  <footer id="footer" class="footer">
-    <div class="copyright">
-      &copy; Copyright <strong><span>e-learning</span></strong>. All Rights Reserved
-    </div>
-    <div class="credits">
 
-    </div>
-  </footer><!-- End Footer -->
 
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
 {% block javascripts %}
-  <!-- Vendor JS Files -->
+ 
   <script src="{{asset('vendor/apexcharts/apexcharts.min.js')}}"></script>
   <script src="{{asset('vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
   <script src="{{asset('vendor/chart.js/chart.umd.js')}}"></script>
@@ -352,9 +335,8 @@
   <script src="{{asset('vendor/simple-datatables/simple-datatables.js')}}"></script>
   <script src="{{asset('vendor/tinymce/tinymce.min.js')}}"></script>
   <script src="{{asset('vendor/php-email-form/validate.js')}}"></script>
-  {# <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script> #}
 
-  <!-- Template Main JS File -->
+ 
   <script src="{{asset('js/main.js')}}"></script>
 
 
